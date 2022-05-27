@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styleManageUsers.css">
+    <link rel="stylesheet" href="styleAllUsers.css">
     <title>Fingerprint Attendance</title>
 </head>
 <body>
@@ -12,58 +12,25 @@
         <div class="web-title-name">Fingerprint <span>Attendance</span> </div>
         <div class="options">
             <ul>
-                <a href="allUsers.html"><li>Users</li></a> 
+                <a href="allUsers.html"><li style="color: rgba(252, 163, 17, 1);;">Users</li></a> 
                 <li>Users Logs</li>
-                <a href="index.html"  style="color: rgba(252, 163, 17, 1);;"><li>Manage Users</li></a>
+                <a href="index.html"><li>Manage Users</li></a>
             </ul>
         </div>
     </section>
 
     <section class="web-content">
-        <div class="form-area">
-            <div class="form-title">
-                <div>Add a new user or update</div>
-                <div>user or remove user</div >
-            </div>
-
-            <div class="input-feild">
-                <div class="feild-title">User Fingerprint ID</div>
-                <input class="inpt" type="text" placeholder="Enter Fingerprint ID 1 & 127"><br>
-
-                <div class="button-sec">
-                    <button>Add Fingerprint ID</button>
-                </div>
-
-                <div class="feild-title">User Information</div>
-                <input class="inpt" type="text" placeholder="User Name"><br>
-                <input class="inpt" type="text" placeholder="Serial Number"><br>
-                <input class="inpt" type="text" placeholder="Email Address"><br>
-
-                <div class="feild-title">Additional Information</div>
-                <input class="inpt" type="text" placeholder="Time In"><br>
-
-                <div class="ratio-bttn">
-                    <input type="radio" name="gender" value="male"> Male 
-                    <input type="radio" name="gender" value="female"> Female
-                </div>
-                <div class="button-sec">
-                    <button>Add User</button>
-                </div>
-                <div class="button-sec">
-                    <button>Update User</button>
-                </div>
-                <div class="button-sec">
-                    <button>Remove User</button>
-                </div>
-            </div>
+ 
+        <div class="page-title">
+            All users
         </div>
-
 
         <div class="table-area">
             <table>
                 <tr>
                     <th>Fingerprint ID</th>
                     <th>Name</th>
+                    <th>Email</th>
                     <th>Gender</th>
                     <th>S.No</th>
                     <th>Date</th>
@@ -72,6 +39,7 @@
                 <tr>
                     <td>1</td>
                     <td>Kasun</td>
+                    <td>kasun@gmail.com</td>
                     <td>Male</td>
                     <td>1001</td>
                     <td>24/05/22</td>
@@ -80,6 +48,7 @@
                 <tr>
                     <td>2</td>
                     <td>Amali</td>
+                    <td>amali@gmail.com</td>
                     <td>Female</td>
                     <td>1002</td>
                     <td>24/05/22</td>
@@ -88,6 +57,7 @@
                 <tr>
                     <td>3</td>
                     <td>Kasun</td>
+                    <td>kasun@gmail.com</td>
                     <td>Male</td>
                     <td>1003</td>
                     <td>24/05/22</td>
@@ -96,6 +66,7 @@
                 <tr>
                     <td>4</td>
                     <td>Amali</td>
+                    <td>amali@gmail.com</td>
                     <td>Female</td>
                     <td>1004</td>
                     <td>24/05/22</td>

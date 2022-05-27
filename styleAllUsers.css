@@ -1,0 +1,74 @@
+body {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  background-color: rgba(20, 33, 61, 1);
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+}
+/* ----------------------------------------------------------nav bar ---------------------------------*/
+a {
+  text-decoration: none;
+  color: white;
+}
+.nav-bar {
+  background-color: black;
+  height: 8vh;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+.web-title-name {
+  font-size: 64px;
+  font-weight: bold;
+}
+span {
+  color: rgba(252, 163, 17, 1);
+}
+.options {
+  width: 500px;
+}
+ul {
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  font-size: 24px;
+}
+li {
+  cursor: pointer;
+
+  font-weight: 500;
+}
+li:hover {
+  color: rgba(252, 163, 17, 1);
+}
+
+/* -----------------------------table area--------------------- */
+.page-title {
+  width: 100%;
+  color: white;
+  display: flex;
+  justify-content: center;
+  font-size: 32px;
+  padding: 20px;
+  text-decoration: underline;
+}
+
+.table-area {
+  margin: 0px;
+  width: 100%;
+}
+table {
+  color: white;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 25px;
+}
+td,
+th {
+  text-align: center;
+  vertical-align: middle;
+  border: 1px solid white;
+  padding: 5px;
+}
