@@ -99,6 +99,7 @@ button {
   background-color: rgba(252, 163, 17, 1);
   border: none;
   cursor: pointer;
+  padding: 8px;
 }
 
 .inpt {
