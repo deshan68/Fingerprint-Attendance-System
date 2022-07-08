@@ -28,16 +28,16 @@
 
             <div class="input-feild">
                 <div class="feild-title">User Fingerprint ID</div>
-                <input class="inpt" type="text" placeholder="Enter Fingerprint ID 1 & 127"><br>
+                <input class="inpt" type="text" id="FingerId" placeholder="Enter Fingerprint ID 1 & 127"><br>
 
                 <div class="button-sec">
-                    <button>Add Fingerprint ID</button>
+                    <button id="addFingerBtn">Add Fingerprint ID</button>
                 </div>
 
                 <div class="feild-title">User Information</div>
-                <input class="inpt" type="text" placeholder="User Name"><br>
-                <input class="inpt" type="text" placeholder="Serial Number"><br>
-                <input class="inpt" type="text" placeholder="Email Address"><br>
+                <input class="inpt" type="text" id="UserName" placeholder="User Name"><br>
+                <input class="inpt" type="text" id="SrlNum" placeholder="Serial Number"><br>
+                <input class="inpt" type="text" id="EmlAddrs" placeholder="Email Address"><br>
 
                 <div class="feild-title">Additional Information</div>
                 <input class="inpt" type="text" placeholder="Time In"><br>
@@ -47,13 +47,13 @@
                     <input type="radio" name="gender" value="female"> Female
                 </div>
                 <div class="button-sec">
-                    <button>Add User</button>
+                    <button id="AddUsrBtn" >Add User</button>
                 </div>
                 <div class="button-sec">
-                    <button>Update User</button>
+                    <button id="UpdtUsrBtn">Update User</button>
                 </div>
                 <div class="button-sec">
-                    <button>Remove User</button>
+                    <button id="RmvUsrBtn">Remove User</button>
                 </div>
             </div>
         </div>
@@ -105,6 +105,91 @@
         </div>
     </section>
 
+    <script src="app.js" ></script>
+
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.9.0/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+          apiKey: "AIzaSyCotFCQkdkrPv-40udPECkGOFuTJKkdirI",
+          authDomain: "nodemcuprjct.firebaseapp.com",
+          databaseURL: "https://nodemcuprjct-default-rtdb.firebaseio.com",
+          projectId: "nodemcuprjct",
+          storageBucket: "nodemcuprjct.appspot.com",
+          messagingSenderId: "367799849431",
+          appId: "1:367799849431:web:fe074db5da79af606f3b92",
+          measurementId: "G-H6KV984NVN"
+        };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+
+        import {getDatabase, ref, get , set, child, update, remove}
+        from "https://www.gstatic.com/firebasejs/9.9.0/firebase-database.js";
+        
+        const db = getDatabase();
+
+        //reference
+        var FingerId = document.getElementById("FingerId");
+        var UserName = document.getElementById("UserName");
+        var SrlNum = document.getElementById("SrlNum");
+        var EmlAddrs = document.getElementById("EmlAddrs");
+
+        var addFingerBtn = document.getElementById("addFingerBtn");
+        var AddUsrBtn = document.getElementById("AddUsrBtn");
+        var UpdtUsrBtn = document.getElementById("UpdtUsrBtn");
+        var RmvUsrBtn = document.getElementById("RmvUsrBtn");
+
+        // insert fingerId function
+                function InsertFingerId(){
+            set(ref(db, "Students/"+ FingerId.value),{
+                FingerId: FingerId.value
+            })
+            .then(()=>{
+                alert("Finger Id stored successfully");
+            })
+            .catch((error)=>{
+                alert("unsuccessfull, error"+error);
+            });
+        }
+
+        // insert data function
+        function InsertUserInfo(){
+            set(ref(db, "Students/"+ FingerId.value),{
+                NameOfStd: UserName.value,
+                FingerId: FingerId.value,
+                SrlNum: SrlNum.value,
+                EmlAddrs: EmlAddrs.value
+            })
+            .then(()=>{
+                alert("data stored successfully");
+            })
+            .catch((error)=>{
+                alert("unsuccessfull, error"+error);
+            });
+            clearInptBx();
+        }
+
+        //clear input box
+        function clearInptBx(){
+            UserName.value = "";
+            FingerId.value = "";
+            SrlNum.value ="";
+            EmlAddrs.value = "";
+        }
+        // assign events to bttns
+        AddUsrBtn.addEventListener('click', InsertUserInfo);
+        addFingerBtn.addEventListener('click', InsertFingerId);
+
+      </script>
 
 </body>
 </html>
