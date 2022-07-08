@@ -226,16 +226,20 @@
         var RmvUsrBtn = document.getElementById("RmvUsrBtn");
 
         // insert fingerId function
-                function InsertFingerId(){
-            set(ref(db, "Students/"+ FingerId.value),{
-                FingerId: FingerId.value
-            })
-            .then(()=>{
-                alert("Finger Id stored successfully");
-            })
-            .catch((error)=>{
-                alert("unsuccessfull, error"+error);
-            });
+            function InsertFingerId(){
+                if(FingerId.value == ""){
+
+                }else{
+                    set(ref(db, "Students/"+ FingerId.value),{
+                        FingerId: FingerId.value
+                    })
+                    .then(()=>{
+                        alert("Finger Id stored successfully");
+                    })
+                    .catch((error)=>{
+                        alert("unsuccessfull, error"+error);
+                    });
+                    }
         }
 
         // insert data function
