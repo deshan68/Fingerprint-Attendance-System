@@ -214,6 +214,7 @@
 
         //reference
         var FingerId = document.getElementById("FingerId");
+        var CurrentFingerId  = FingerId;
         var UserName = document.getElementById("UserName");
         var SrlNum = document.getElementById("SrlNum");
         var EmlAddrs = document.getElementById("EmlAddrs");
@@ -239,7 +240,21 @@
                     .catch((error)=>{
                         alert("unsuccessfull, error"+error);
                     });
+
+                    IdGenerate();
                     }
+        }
+
+        function IdGenerate(){
+                    set(ref(db, "CurrentFingerId"),{
+                        CurrentFingerId: CurrentFingerId.value
+                    })
+                    .then(()=>{
+                        alert("Finger Id stored successfully");
+                    })
+                    .catch((error)=>{
+                        alert("unsuccessfull, error"+error);
+                    });
         }
 
         // insert data function
@@ -268,6 +283,11 @@
                 .catch((error)=>{
                     alert("unsuccessfull, error"+error);
                 });
+
+
+
+
+                // clear all input field
                 clearInptBx();
             }
         }
