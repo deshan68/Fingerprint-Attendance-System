@@ -228,7 +228,7 @@
         // insert fingerId function
             function InsertFingerId(){
                 if(FingerId.value == ""){
-
+                    alert("plz enter ID");
                 }else{
                     set(ref(db, "Students/"+ FingerId.value),{
                         FingerId: FingerId.value
@@ -245,27 +245,31 @@
         // insert data function
         function InsertUserInfo(){
 
-            // select the gender from radio buttons
-            for (const radioButton of radioButtons) {
-                if (radioButton.checked) {
-                    var selectedGender = radioButton.value;
-                    break;
+            if(UserName.value == "" || SrlNum.value == "" || EmlAddrs.value ==  ""){
+                alert("plz enter info");
+            }else{
+                // select the gender from radio buttons
+                for (const radioButton of radioButtons) {
+                    if (radioButton.checked) {
+                        var selectedGender = radioButton.value;
+                        break;
+                    }
                 }
+                set(ref(db, "Students/"+ FingerId.value),{
+                    NameOfStd: UserName.value,
+                    FingerId: FingerId.value,
+                    SrlNum: SrlNum.value,
+                    EmlAddrs: EmlAddrs.value,
+                    Gender: selectedGender
+                })
+                .then(()=>{
+                    alert("data stored successfully");
+                })
+                .catch((error)=>{
+                    alert("unsuccessfull, error"+error);
+                });
+                clearInptBx();
             }
-            set(ref(db, "Students/"+ FingerId.value),{
-                NameOfStd: UserName.value,
-                FingerId: FingerId.value,
-                SrlNum: SrlNum.value,
-                EmlAddrs: EmlAddrs.value,
-                Gender: selectedGender
-            })
-            .then(()=>{
-                alert("data stored successfully");
-            })
-            .catch((error)=>{
-                alert("unsuccessfull, error"+error);
-            });
-            clearInptBx();
         }
 
         //clear input box
