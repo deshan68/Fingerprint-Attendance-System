@@ -89,7 +89,6 @@
             let td5 = document.createElement('td');
             let td6 = document.createElement('td');
 
-
             const d = new Date();
             let text = d.toLocaleDateString();
 
@@ -108,6 +107,7 @@
             trow.appendChild(td6);
 
             tbody.appendChild(trow);
+
             
         }
 
@@ -135,6 +135,7 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
+        const StoredFingerArry = [];
 
         import {getDatabase, ref, get , set, child, update, remove, onValue}
         from "https://www.gstatic.com/firebasejs/9.9.0/firebase-database.js";
@@ -148,20 +149,68 @@
                 });
             }
 
-            function GetAllDataRealtime(){
-            const dbRef = ref(db,"Students");
-
-            onValue(dbRef,(snapshot)=>{
-                var students = [];
-
-                snapshot.forEach(childSnapshot => {
-                    students.push(childSnapshot.val());
-                });
-
-                AddAllItemToTable(students);
-            })
+        function AddAllItemToDB(Succsessfully_Stored_ID){
+            Succsessfully_Stored_ID.forEach(element => {
+                
+                AddItemToDB(element.FingerId)
+            });
+        }
+        function AddItemToDB(SavedId){
+            StoredFingerArry.push(SavedId);
 
         }
+
+
+        function GetAllDataRealtime(){
+
+                const db = getDatabase();
+                const starCountRef = ref(db, 'Succsessfully_Stored_ID/fingerID/' );
+                onValue(starCountRef, (snapshot) => {
+                    const StoredFingerId = snapshot.val();
+                    set(ref(db, "Succsessfully_Stored_ID/"+ StoredFingerId),{
+                        FingerId: StoredFingerId
+                    })
+                });
+
+                const dbRef = ref(db,"Students");
+
+                onValue(dbRef,(snapshot)=>{
+                    var students = [];
+                    snapshot.forEach(childSnapshot => {
+                        students.push(childSnapshot.val());
+                    });
+
+                    AddAllItemToTable(students);
+                })
+
+                const dbRef2 = ref(db,"Succsessfully_Stored_ID");
+
+                onValue(dbRef2,(snapshot)=>{
+                    var FingerArry = [];
+                    
+                    snapshot.forEach(childSnapshot => {
+                        FingerArry.push(childSnapshot.val());
+                    });
+                    FingerArry.pop();
+                    // console.log(FingerArry);
+                    AddAllItemToDB(FingerArry);
+                })
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         window.onload = GetAllDataRealtime;
@@ -215,6 +264,7 @@
         //reference
         var FingerId = document.getElementById("FingerId");
         var CurrentFingerId  = FingerId;
+        var OldId = "-1";
         var UserName = document.getElementById("UserName");
         var SrlNum = document.getElementById("SrlNum");
         var EmlAddrs = document.getElementById("EmlAddrs");
@@ -226,28 +276,57 @@
         var UpdtUsrBtn = document.getElementById("UpdtUsrBtn");
         var RmvUsrBtn = document.getElementById("RmvUsrBtn");
 
-        // insert fingerId function
+        // insert fingerId function and cheak the validation of entered ID
             function InsertFingerId(){
-                if(FingerId.value == ""){
-                    alert("plz enter ID");
-                }else{
-                    set(ref(db, "Students/"+ FingerId.value),{
-                        FingerId: FingerId.value
-                    })
-                    .then(()=>{
-                        alert("Finger Id stored successfully");
-                    })
-                    .catch((error)=>{
-                        alert("unsuccessfull, error"+error);
-                    });
 
-                    IdGenerate();
+                if(StoredFingerArry.length == 0){
+                    set(ref(db, "Students/"+ FingerId.value),{
+                                FingerId: FingerId.value
+                            })
+                            .then(()=>{
+                                alert("Finger Id stored successfully");
+                            })
+                            .catch((error)=>{
+                                alert("unsuccessfull, error"+error);
+                            });
+
+                            IdGenerate();
+                }else{
+                    let isValidId;
+                    for(let i=0 ; i<StoredFingerArry.length ;i++){
+                        if(StoredFingerArry[i] == FingerId.value){
+                            isValidId = false;
+                            break;
+                        }else{
+                            isValidId =true;
+                        }
                     }
+
+                    if(isValidId == true && FingerId.value != ""){
+                                set(ref(db, "Students/"+ FingerId.value),{
+                                    FingerId: FingerId.value
+                                })
+                                .then(()=>{
+                                    alert("Finger Id stored successfully");
+                                })
+                                .catch((error)=>{
+                                    alert("unsuccessfull, error"+error);
+                                });
+
+                                IdGenerate();
+                    }else{
+                                alert("This ID alredy Used or Invalid ID");
+                            }
+                }
+
+                
+
         }
 
         function IdGenerate(){
                     set(ref(db, "CurrentFingerId"),{
-                        CurrentFingerId: CurrentFingerId.value
+                        CurrentFingerId: CurrentFingerId.value,
+                        Old_Id: OldId
                     })
                     .then(()=>{
                         alert("Finger Id stored successfully");
@@ -255,6 +334,8 @@
                     .catch((error)=>{
                         alert("unsuccessfull, error"+error);
                     });
+
+                    OldId = CurrentFingerId.value;
         }
 
         // insert data function
