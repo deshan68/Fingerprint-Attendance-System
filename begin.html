@@ -8,18 +8,90 @@
     <title>Welcome</title>
 </head>
 <body >
-    <section>
-        <a href="index.html">
+    <section class="beginSection" >
+        <!-- <a class="begin_a" href="index.html"> -->
             <div id="EnrlDiv">
                 Enroll
             </div>
-        </a>
+        <!-- </a> -->
 
-        <a href="userLogs.html">
+        <!-- <a class="begin_a"  href="userLogs.html"> -->
             <div id="MrkAttnDiv">
                 Mark The Attendance
             </div>
-        </a>
+        <!-- </a> -->
     </section>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.9.0/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+          apiKey: "AIzaSyCotFCQkdkrPv-40udPECkGOFuTJKkdirI",
+          authDomain: "nodemcuprjct.firebaseapp.com",
+          databaseURL: "https://nodemcuprjct-default-rtdb.firebaseio.com",
+          projectId: "nodemcuprjct",
+          storageBucket: "nodemcuprjct.appspot.com",
+          messagingSenderId: "367799849431",
+          appId: "1:367799849431:web:fe074db5da79af606f3b92",
+          measurementId: "G-H6KV984NVN"
+        };
+      
+        // Initialize Firebase
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const StoredFingerArry = [];
+
+        import {getDatabase, ref, get , set, child, update, remove, onValue}
+        from "https://www.gstatic.com/firebasejs/9.9.0/firebase-database.js";
+        
+        const db = getDatabase();
+
+        // references
+        var enrollBtn = document.getElementById("EnrlDiv");
+        var mrkAttnBtn = document.getElementById("MrkAttnDiv");
+        var Enrollment ;
+        var MarkTheAttend;
+
+        // Update DB when we are choose enrollment or Mark Attendanece
+        function InsertChoose1(){
+            set(ref(db,"Start with Enrollment or Mark the Attendance/"),{
+                Enrollment: true,
+                Mark_The_Attedance: false
+            })
+            .then(()=>{
+                alert("selected");
+            })
+            .catch(()=>{
+                alert("Cant Mark");
+            })
+            console.log("InsertChoose1")
+        }
+
+        function InsertChoose2(){
+            set(ref(db,"Start with Enrollment or Mark the Attendance/"),{
+                Enrollment: false,
+                Mark_The_Attedance: true
+            })
+            .then(()=>{
+                alert("selected");
+            })
+            .catch(()=>{
+                alert("Cant Mark");
+            })
+            console.log("InsertChoose2")
+        }
+
+        enrollBtn.addEventListener('click', InsertChoose1);
+        mrkAttnBtn.addEventListener('click', InsertChoose2);
+
+
+      </script>
 </body>
 </html>

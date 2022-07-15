@@ -5,6 +5,37 @@ body {
   background-color: rgba(20, 33, 61, 1);
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 }
+/* ------------------------------beginj area------------------------------ */
+#EnrlDiv, #MrkAttnDiv{
+  width: 360px;
+  height: 200px;
+  border: 1px rgb(0, 0, 0) solid;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+  background-color: rgba(252, 163, 17, 1);
+  font-weight: bold;
+  cursor: pointer;
+
+}
+
+.beginSection{
+  display: flex;
+  justify-content: space-evenly;
+  justify-items: center;
+  align-items: center;
+  height: 80vh;
+}
+
+.begin_a {
+  text-decoration: none;
+  color: rgb(0, 0, 0);
+}
+
+#attendnceSec, #enrollSec{
+  display: none;
+}
 /* ----------------------------------------------------------nav bar ---------------------------------*/
 a {
   text-decoration: none;
@@ -28,6 +59,7 @@ span {
 }
 .options {
   width: 500px;
+  text-align: right;
 }
 ul {
   list-style: none;
@@ -37,13 +69,18 @@ ul {
 }
 li {
   cursor: pointer;
-
   font-weight: 500;
 }
-li:hover {
+li:hover, i:hover {
   color: rgba(252, 163, 17, 1);
 }
 
+i{
+  cursor: pointer;
+}
+i{
+  font-size: 35px;
+}
 /* --------------------------------------------------------- form area-------------------------------- */
 .form-area {
   width: 30%;
