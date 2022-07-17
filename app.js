@@ -45,7 +45,7 @@
        // filling the table
        var tbody = document.getElementById('tbody1');
 
-       function AddItemToTable(fngrId, name, gen, sNum){
+       function AddItemToTable(fngrId, name, gen, sNum, email){
            let trow = document.createElement("tr");
            let td1 = document.createElement('td');
            let td2 = document.createElement('td');
@@ -62,7 +62,7 @@
            td3.innerHTML = gen;
            td4.innerHTML = sNum;
            td5.innerHTML = text;
-           td6.innerHTML = "10:00";
+           td6.innerHTML = email;
 
            trow.appendChild(td1);
            trow.appendChild(td2);
@@ -110,7 +110,7 @@
        function AddAllItemToTable(Students){
                tbody.innerHTML="";
                Students.forEach(element => {
-                   AddItemToTable(element.FingerId, element.NameOfStd, element.Gender, element.SrlNum)
+                   AddItemToTable(element.FingerId, element.NameOfStd, element.Gender, element.SrlNum,element.EmlAddrs)
                });
            }
 
@@ -138,7 +138,6 @@
                });
 
                const dbRef = ref(db,"Students");
-
                onValue(dbRef,(snapshot)=>{
                    var students = [];
                    snapshot.forEach(childSnapshot => {
@@ -149,7 +148,6 @@
                })
 
                const dbRef2 = ref(db,"Succsessfully_Stored_ID");
-
                onValue(dbRef2,(snapshot)=>{
                    var FingerArry = [];
                    
@@ -160,6 +158,19 @@
                    // console.log(FingerArry);
                    AddAllItemToDB(FingerArry);
                })
+
+               set(ref(db, "Found_IDs/"),{
+                ID:0
+                })
+
+                const dbRef3 = ref(db, 'Found_IDs/ID/');
+                onValue(dbRef3, (snapshot) => {
+                    const FoundId = snapshot.val();
+                    console.log(FoundId);
+                    if(FoundId!=0){
+                        MarkTheFoundId(FoundId);
+                    }
+                });
 
 
        }
@@ -321,7 +332,8 @@
                    FingerId: FingerId.value,
                    SrlNum: SrlNum.value,
                    EmlAddrs: EmlAddrs.value,
-                   Gender: selectedGender
+                   Gender: selectedGender,
+                   TimeIn: null
                })
                .then(()=>{
                    alert("data stored successfully");
@@ -357,8 +369,7 @@
 
 
 
-       var Enrollment ;
-       var MarkTheAttend;
+
 
        // Update DB when we are choose enrollment or Mark Attendanece
        function InsertChoose1(){
@@ -381,3 +392,43 @@
 
        enrollBtn.addEventListener('click', InsertChoose1);
        mrkAttnBtn.addEventListener('click', InsertChoose2);
+
+
+
+
+    //    mark the found ID
+    function MarkTheFoundId(FoundId){
+        const dbRef3 = ref(db,"Students" );
+        onValue(dbRef3,(snapshot)=>{
+            var FoundIdStdnt = [];
+            snapshot.forEach(childSnapshot => {
+                FoundIdStdnt.push(childSnapshot.val());
+            });
+            console.log(FoundIdStdnt);
+            UpdateAllItemToTable(FoundIdStdnt[FoundId-1]);
+        });
+        
+        function UpdateAllItemToTable(Students){
+            console.log(Students.FingerId);
+            UpdateItemToTable(Students.FingerId, Students.NameOfStd, Students.Gender, Students.SrlNum, Students.EmlAddrs);
+            
+        };
+
+        function UpdateItemToTable(fngrId, name, gen, sNum, email){
+ 
+            set(ref(db, "Students/"+ FoundId),{
+                NameOfStd: name,
+                FingerId: fngrId,
+                SrlNum: sNum,
+                EmlAddrs: email,
+                Gender: gen,
+                TimeIn: "3 AM"
+            })
+            .then(()=>{
+                alert("Time in stored successfully");
+            })
+            .catch((error)=>{
+                alert("unsuccessfull, error"+error);
+            });
+        }
+    }
