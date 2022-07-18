@@ -5,7 +5,7 @@
     var enrollSec = document.getElementById("enrollSec");
     var enrollBtn = document.getElementById("EnrlDiv");
     var mrkAttnBtn = document.getElementById("MrkAttnDiv");
-
+    let countVrble = 0;
     homeBtn.addEventListener('click', home);
     enrollBtn.addEventListener('click', enrollPage);
     mrkAttnBtn.addEventListener('click', attenPage);
@@ -15,6 +15,10 @@
         beginSection.style.display = 'flex';
         enrollSec.style.display =  'none';  
         attendnceSec.style.display =  'none';  
+
+        set(ref(db, "I  am now in the/"),{
+            Mark_the_Attedance_Section: 0
+        });
 
     }
     function enrollPage(){
@@ -43,7 +47,8 @@
        
        
        // filling the table
-       var tbody = document.getElementById('tbody1');
+       var tbody1 = document.getElementById('tbody1');
+       var tbody2 = document.getElementById('tbody2');
 
        function AddItemToTable(fngrId, name, gen, sNum, email){
            let trow = document.createElement("tr");
@@ -71,7 +76,7 @@
            trow.appendChild(td5);
            trow.appendChild(td6);
 
-           tbody.appendChild(trow);
+           tbody1.appendChild(trow);
 
            
        }
@@ -102,13 +107,13 @@
        const analytics = getAnalytics(app);
        const StoredFingerArry = [];
 
-       import {getDatabase, ref, get , set, child, update, remove, onValue}
+       import {getDatabase, ref, get , set, child, update, remove, onValue, push}
        from "https://www.gstatic.com/firebasejs/9.9.0/firebase-database.js";
        
        const db = getDatabase();
 
        function AddAllItemToTable(Students){
-               tbody.innerHTML="";
+               tbody1.innerHTML="";
                Students.forEach(element => {
                    AddItemToTable(element.FingerId, element.NameOfStd, element.Gender, element.SrlNum,element.EmlAddrs)
                });
@@ -127,6 +132,17 @@
 
 
        function GetAllDataRealtime(){
+
+                const db5 = getDatabase();
+                const dbRef5 = ref(db5, 'I  am now in the/Mark_the_Attedance_Section');
+                onValue(dbRef5, (snapshot) => {
+                    const I_am_now_in = snapshot.val();
+                    if(I_am_now_in ==  1){
+                        attenPage();
+                        startTheMarkAttn();
+                        InsertChoose2();
+                    }
+                });
 
                const db = getDatabase();
                const starCountRef = ref(db, 'Succsessfully_Stored_ID/fingerID/' );
@@ -159,24 +175,31 @@
                    AddAllItemToDB(FingerArry);
                })
 
-               set(ref(db, "Found_IDs/"),{
-                ID:0
-                })
 
-                const dbRef3 = ref(db, 'Found_IDs/ID/');
-                onValue(dbRef3, (snapshot) => {
-                    const FoundId = snapshot.val();
-                    console.log(FoundId);
-                    if(FoundId!=0){
-                        MarkTheFoundId(FoundId);
-                    }
-                });
 
 
        }
 
 
+function startTheMarkAttn(){
+    set(ref(db, "Found_IDs/"),{
+        ID:0
+        })
+        
+        const dbRef3 = ref(db, 'Found_IDs/ID/');
+        onValue(dbRef3, (snapshot) => {
+            const FoundId = snapshot.val();
+            if(FoundId == 0){
+                
+            }else{
 
+                set(ref(db, "Attempt Count/"+ FoundId),{
+                    Count:countVrble
+                });
+                MarkTheFoundId(FoundId);
+            }
+        });
+}
 
 
 
@@ -190,12 +213,16 @@
 
 
        window.onload = GetAllDataRealtime;
+    //    window.onload = onload2;
 
 
 
 
 
 
+    function onload2(){
+
+    }
 
 
 
@@ -251,6 +278,7 @@
        var AddUsrBtn = document.getElementById("AddUsrBtn");
        var UpdtUsrBtn = document.getElementById("UpdtUsrBtn");
        var RmvUsrBtn = document.getElementById("RmvUsrBtn");
+
 
        // insert fingerId function and cheak the validation of entered ID
            function InsertFingerId(){
@@ -333,7 +361,7 @@
                    SrlNum: SrlNum.value,
                    EmlAddrs: EmlAddrs.value,
                    Gender: selectedGender,
-                   TimeIn: null
+                   DaleyAttemptNo: 1
                })
                .then(()=>{
                    alert("data stored successfully");
@@ -387,48 +415,147 @@
                Mark_The_Attedance: true
            })
 
-           console.log("InsertChoose2")
        }
 
        enrollBtn.addEventListener('click', InsertChoose1);
        mrkAttnBtn.addEventListener('click', InsertChoose2);
+       mrkAttnBtn.addEventListener('click', startTheMarkAttn);
 
 
 
 
     //    mark the found ID
     function MarkTheFoundId(FoundId){
-        const dbRef3 = ref(db,"Students" );
-        onValue(dbRef3,(snapshot)=>{
+
+
+        
+        
+            const dbRef3 = ref(db,"Students" );
+            onValue(dbRef3,(snapshot)=>{
             var FoundIdStdnt = [];
             snapshot.forEach(childSnapshot => {
                 FoundIdStdnt.push(childSnapshot.val());
             });
-            console.log(FoundIdStdnt);
-            UpdateAllItemToTable(FoundIdStdnt[FoundId-1]);
+            const dbRef4 = ref(db, 'Found_IDs/ID/');
+            onValue(dbRef4, (snapshot) => {
+                const FoundId = snapshot.val();
+                if(FoundId != 0){
+                    set(ref(db, "Found_IDs/"),{
+                        ID:0
+                    });
+                    UpdateAllItemToTable(FoundIdStdnt[FoundId-1]);
+                }else{
+                    startTheMarkAttn();
+                }
+            });
+
         });
         
         function UpdateAllItemToTable(Students){
-            console.log(Students.FingerId);
-            UpdateItemToTable(Students.FingerId, Students.NameOfStd, Students.Gender, Students.SrlNum, Students.EmlAddrs);
+            UpdateItemToTable(Students.FingerId, Students.NameOfStd, Students.Gender, Students.SrlNum, Students.EmlAddrs, Students.DaleyAttemptNo);
             
         };
 
-        function UpdateItemToTable(fngrId, name, gen, sNum, email){
- 
-            set(ref(db, "Students/"+ FoundId),{
+        function UpdateItemToTable(fngrId, name, gen, sNum, email, attmpt){
+            
+            let mydate = new Date();
+            let day = mydate.getDate();
+            let month = mydate.getMonth() + 1;
+            let year = mydate.getUTCFullYear();
+            let StrngDate = String(day);
+            let StrngMonth = String(month);
+            let StrngYear = String(year);
+            let fullDate =  StrngYear + " / " + StrngMonth + " / " + StrngDate;
+            var hours = mydate.getHours();
+            var min = mydate.getMinutes();
+
+            
+            set(ref(db, "Attendance Sheat/"+ month + "/" + day + "/" + FoundId + "/" + "PersonalInfo"),{
                 NameOfStd: name,
                 FingerId: fngrId,
                 SrlNum: sNum,
                 EmlAddrs: email,
                 Gender: gen,
-                TimeIn: "3 AM"
+                Attendance_date: fullDate,
+
             })
-            .then(()=>{
-                alert("Time in stored successfully");
-            })
-            .catch((error)=>{
-                alert("unsuccessfull, error"+error);
-            });
+            // .then(()=>{
+            //     alert("Time in stored successfully");
+            // })
+            // .catch((error)=>{
+            //     alert("unsuccessfull, error"+error);
+            // }); 
+
+
+            if(attmpt == 1){
+                set(ref(db, "Students/"+ fngrId),{
+                    NameOfStd: name,
+                    FingerId: fngrId,
+                    SrlNum: sNum,
+                    EmlAddrs: email,
+                    Gender: gen,
+                    DaleyAttemptNo: 2
+                });
+                set(ref(db, "Found_IDs/"),{
+                    ID:0
+                });
+                set(ref(db, "Attendance Sheat/"+ month + "/" + day + "/" + FoundId + "/" + "TimeIn"),{
+                    TimeIn: hours + ":" + min,
+                });
+                console.log("attmp 1 ok");
+                set(ref(db, "I  am now in the/"),{
+                    Mark_the_Attedance_Section: 1
+                });
+                location.reload();
+                attenPage();
+                InsertChoose2();
+                startTheMarkAttn();
+            }else if((attmpt == 2)){
+                set(ref(db, "Students/"+ fngrId),{
+                    NameOfStd: name,
+                    FingerId: fngrId,
+                    SrlNum: sNum,
+                    EmlAddrs: email,
+                    Gender: gen,
+                    DaleyAttemptNo: 3
+                });
+                set(ref(db, "Attendance Sheat/"+ month + "/" + day + "/" + FoundId + "/" + "TimeOut"),{
+                    TimeOut: hours + ":" + min,
+                });
+                set(ref(db, "Found_IDs/"),{
+                    ID:0
+                });
+                console.log("attmp 2 ok");
+                set(ref(db, "I  am now in the/"),{
+                    Mark_the_Attedance_Section: 1
+                });
+                location.reload();
+            }else{
+                alert("out of attempt");
+                set(ref(db, "Found_IDs/"),{
+                    ID:0
+                });
+                // setTimeout(attenPage, 3000);
+                // InsertChoose2();
+                // startTheMarkAttn();
+            }
+            
+
+
+            
+
         }
+        
+        
     }
+
+
+
+
+
+
+
+
+    // -----------send data to mark attedance table-----------------------
+
+    
