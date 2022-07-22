@@ -161,6 +161,8 @@
                    });
 
                    AddAllItemToTable(students);
+                    console.log(students);
+
                })
 
                const dbRef2 = ref(db,"Succsessfully_Stored_ID");
@@ -287,9 +289,9 @@ function startTheMarkAttn(){
                    set(ref(db, "Students/"+ FingerId.value),{
                                FingerId: FingerId.value
                            })
-                           .then(()=>{
-                               alert("Finger Id stored successfully");
-                           })
+                        //    .then(()=>{
+                        //        alert("Finger Id stored successfully");
+                        //    })
                            .catch((error)=>{
                                alert("unsuccessfull, error"+error);
                            });
@@ -310,16 +312,19 @@ function startTheMarkAttn(){
                                set(ref(db, "Students/"+ FingerId.value),{
                                    FingerId: FingerId.value
                                })
-                               .then(()=>{
-                                   alert("Finger Id stored successfully");
-                               })
+                            //    .then(()=>{
+                            //        alert("Finger Id stored successfully");
+                            //    })
                                .catch((error)=>{
                                    alert("unsuccessfull, error"+error);
                                });
 
                                IdGenerate();
                    }else{
-                               alert("This ID alredy Used or Invalid ID");
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'ID Alredy Used Or Invalid ID',
+                        })
                            }
                }
 
@@ -333,7 +338,11 @@ function startTheMarkAttn(){
                        Old_Id: OldId
                    })
                    .then(()=>{
-                       alert("Finger Id stored successfully");
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Fingerprint ID Stored Successfully',
+                            text: 'Scanning has started',
+                        })
                    })
                    .catch((error)=>{
                        alert("unsuccessfull, error"+error);
@@ -346,7 +355,10 @@ function startTheMarkAttn(){
        function InsertUserInfo(){
 
            if(UserName.value == "" || SrlNum.value == "" || EmlAddrs.value ==  ""){
-               alert("plz enter info");
+            Swal.fire({
+                icon: 'warning',
+                title: 'Please Enter Information',
+              })
            }else{
                // select the gender from radio buttons
                for (const radioButton of radioButtons) {
@@ -364,7 +376,10 @@ function startTheMarkAttn(){
                    DaleyAttemptNo: 1
                })
                .then(()=>{
-                   alert("data stored successfully");
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Date Stored Successfully',
+                  })
                })
                .catch((error)=>{
                    alert("unsuccessfull, error"+error);
@@ -465,12 +480,44 @@ function startTheMarkAttn(){
             let StrngDate = String(day);
             let StrngMonth = String(month);
             let StrngYear = String(year);
-            let fullDate =  StrngYear + " / " + StrngMonth + " / " + StrngDate;
+            let fullDate =  StrngYear + "-" + StrngMonth + "-" + StrngDate;
             var hours = mydate.getHours();
             var min = mydate.getMinutes();
+            let LstDte,ReleventId,RelavantDate;
+
+            const dbRef6 = ref(db, "Attendance Sheat");
+            onValue(dbRef6,(snapshot)=>{
+                var AttendanceSheat = [];
+                snapshot.forEach(childSnapshot => {
+                    AttendanceSheat.push(childSnapshot.val());
+                });
+                for(let j=0 ; j<AttendanceSheat.length ; j++){
+                    for(let i = 1 ; i<AttendanceSheat[j].length ; i++){
+                        RelavantDate = (AttendanceSheat[j][i]["PersonalInfo"]["Attendance_date"]);
+                        ReleventId = (AttendanceSheat[j][i]["PersonalInfo"]["FingerId"]);
+                        if(fngrId == ReleventId){
+                            LstDte = RelavantDate;
+                        }
+                        
+                    }
+                }
+            
+            })
+
+
+            if(LstDte != fullDate){
+                attmpt = 1;
+                set(ref(db, "Students/"+ fngrId),{
+                    NameOfStd: name,
+                    FingerId: fngrId,
+                    SrlNum: sNum,
+                    EmlAddrs: email,
+                    Gender: gen,
+                    DaleyAttemptNo: 1
+                });            }
 
             
-            set(ref(db, "Attendance Sheat/"+ month + "/" + day + "/" + FoundId + "/" + "PersonalInfo"),{
+            set(ref(db, "Attendance Sheat/"+ fullDate + "/" + FoundId + "/" + "PersonalInfo"),{
                 NameOfStd: name,
                 FingerId: fngrId,
                 SrlNum: sNum,
@@ -499,8 +546,12 @@ function startTheMarkAttn(){
                 set(ref(db, "Found_IDs/"),{
                     ID:0
                 });
-                set(ref(db, "Attendance Sheat/"+ month + "/" + day + "/" + FoundId + "/" + "TimeIn"),{
+                set(ref(db, "Attendance Sheat/"+ fullDate + "/" + FoundId + "/" + "TimeIn"),{
                     TimeIn: hours + ":" + min,
+
+                });
+                set(ref(db, "Attendance Sheat/"+ fullDate + "/" + FoundId + "/" + "TimeOut"),{
+                    TimeOut: "-"
                 });
                 console.log("attmp 1 ok");
                 set(ref(db, "I  am now in the/"),{
@@ -519,7 +570,7 @@ function startTheMarkAttn(){
                     Gender: gen,
                     DaleyAttemptNo: 3
                 });
-                set(ref(db, "Attendance Sheat/"+ month + "/" + day + "/" + FoundId + "/" + "TimeOut"),{
+                set(ref(db, "Attendance Sheat/"+ fullDate + "/" + FoundId + "/" + "TimeOut"),{
                     TimeOut: hours + ":" + min,
                 });
                 set(ref(db, "Found_IDs/"),{
@@ -531,15 +582,26 @@ function startTheMarkAttn(){
                 });
                 location.reload();
             }else{
-                alert("out of attempt");
+                // Swal.fire('You Are Alredy Attempt')
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'This Student Alredy Attempt',
+                  })
                 set(ref(db, "Found_IDs/"),{
                     ID:0
                 });
+                console.log(LstDte);
+                console.log(fngrId);
+
+
                 // setTimeout(attenPage, 3000);
                 // InsertChoose2();
                 // startTheMarkAttn();
             }
-            
+
+
+
+
 
 
             
@@ -556,6 +618,65 @@ function startTheMarkAttn(){
 
 
 
-    // -----------send data to mark attedance table-----------------------
+// -----------send data to mark attedance table-----------------------
+const dbRef6 = ref(db, "Attendance Sheat");
+onValue(dbRef6,(snapshot)=>{
+    var AttendanceSheat = [];
+    snapshot.forEach(childSnapshot => {
+        AttendanceSheat.push(childSnapshot.val());
+    });
+    tbody2.innerHTML= "";
+    console.log(AttendanceSheat);
+    console.log(AttendanceSheat.length);
+
+    for(let j=0 ; j<AttendanceSheat.length ; j++){
+        for(let i = 1 ; i<AttendanceSheat[j].length ; i++){
+            console.log(AttendanceSheat[j].length);
+            console.log(AttendanceSheat[j][i]["PersonalInfo"], AttendanceSheat[j][i]["TimeIn"], AttendanceSheat[j][i]["TimeOut"]);
+            AddAllItemToAttedanceTable(AttendanceSheat[j][i]["PersonalInfo"], AttendanceSheat[j][i]["TimeIn"],  AttendanceSheat[j][i]["TimeOut"]);
+    
+        }
+    }
+
+})
+    
+function AddAllItemToAttedanceTable(AttendanceSheat_personalInfo, AttendanceSheat_timein, AttendanceSheat_timeout){
+    console.log(AttendanceSheat_personalInfo, AttendanceSheat_timein, AttendanceSheat_timeout);
+    AddItemToAttedanceTable(AttendanceSheat_personalInfo.Attendance_date, AttendanceSheat_personalInfo.Gender, AttendanceSheat_personalInfo.EmlAddrs, AttendanceSheat_personalInfo.SrlNum, AttendanceSheat_personalInfo.NameOfStd, AttendanceSheat_personalInfo.FingerId,
+                            AttendanceSheat_timein.TimeIn, AttendanceSheat_timeout.TimeOut);
+
+}
+
+function AddItemToAttedanceTable(attnDate, gen, email, srlnum, name, fngrid, timein, timeout){
+    let trow = document.createElement("tr");
+    let td1 = document.createElement('td');
+    let td2 = document.createElement('td');
+    let td3 = document.createElement('td');
+    let td4 = document.createElement('td');
+    let td5 = document.createElement('td');
+    let td6 = document.createElement('td');
+    let td7 = document.createElement('td');
+    let td8 = document.createElement('td');
+
+    td1.innerHTML = fngrid;
+    td2.innerHTML = name;
+    td3.innerHTML = email;
+    td4.innerHTML = gen;
+    td5.innerHTML = srlnum;
+    td6.innerHTML = attnDate;
+    td7.innerHTML = timein;
+    td8.innerHTML = timeout;
+
+    trow.appendChild(td1);
+    trow.appendChild(td2);
+    trow.appendChild(td3);
+    trow.appendChild(td4);
+    trow.appendChild(td5);
+    trow.appendChild(td6);
+    trow.appendChild(td7);
+    trow.appendChild(td8);
+
+    tbody2.appendChild(trow);
 
     
+}
