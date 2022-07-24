@@ -35,11 +35,7 @@ ul {
   justify-content: space-between;
   font-size: 24px;
 }
-li {
-  cursor: pointer;
 
-  font-weight: 500;
-}
 li:hover {
   color: rgba(252, 163, 17, 1);
 }
@@ -63,12 +59,15 @@ table {
   color: white;
   width: 100%;
   border-collapse: collapse;
-  font-size: 25px;
 }
-td,
-th {
+td {
   text-align: center;
   vertical-align: middle;
   border: 1px solid white;
-  padding: 5px;
+  font-weight: lighter;
+}
+th{
+  padding: 15px;
+  font-size: 30px;
+
 }

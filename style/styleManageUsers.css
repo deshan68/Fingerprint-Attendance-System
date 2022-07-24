@@ -153,3 +153,15 @@ th {
   border: 1px solid white;
   padding: 5px;
 }
+td {
+  text-align: center;
+  vertical-align: middle;
+  border: 1px solid white;
+  font-weight: lighter;
+
+}
+th{
+  padding: 15px;
+  font-size: 30px;
+
+}
