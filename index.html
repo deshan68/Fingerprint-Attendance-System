@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style/styleManageUsers.css">
     <link rel="stylesheet" href="style/styleAllUsers.css">
+    <link rel="stylesheet" href="style/styleUserLogs.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>Fingerprint Attendance System</title>
 </head>
@@ -33,23 +34,11 @@
             <div id="MrkAttnDiv">
                 Mark The Attendance
             </div>
+            <div id="FiltrDtDiv">
+                Filter Data
+            </div>
         <!-- </a> -->
     </section>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -146,6 +135,44 @@
         </div>
     </section>
 </div>
+
+<div id="FilterSec">
+    <section class="web-content-Filter">
+ 
+        <div class="title-area">
+            <div class="page-title">
+                Users Daily Logs
+            </div>
+            <div class="search_N_dwnldBtn">
+                <!-- <input class="inpt" type="text" placeholder="Select Date"> -->
+                <!-- <i style="color: white; opacity: 0.3; cursor: pointer;" class="fa-solid fa-magnifying-glass"></i> -->
+                    <label for="birthday">Select_Date:</label>
+                    <input  type="date" id="SearchDate" name="birthday">
+                    <button id="serchbtn">Search</button>  
+                    <button >Download Excel File</button>
+                
+            </div>
+        </div>
+
+        <div class="table-area">
+            <table>
+                <thead>
+                    <th>Fingerprint ID</th>
+                    <th>Name</th>
+                    <th>Email </th>
+                    <th>Gender</th>
+                    <th>S.No</th>
+                    <th>Date</th>
+                    <th>Time In</th>
+                    <th>Time Out</th>
+                </thead>
+                <tbody id="tbody3"></tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+
 
 
     <script type="module"  src="app.js"> </script>

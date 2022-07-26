@@ -232,6 +232,8 @@ uint8_t getFingerprintEnroll() {
   }
 
   Serial.println("Remove finger");
+  Firebase.setInt("Finger Print Is/Stored", 2);
+
   delay(2000);
   p = 0;
   while (p != FINGERPRINT_NOFINGER) {
@@ -240,6 +242,7 @@ uint8_t getFingerprintEnroll() {
   Serial.print("ID "); Serial.println(id);
   p = -1;
   Serial.println("Place same finger again");
+
   while (p != FINGERPRINT_OK) {
     p = finger.getImage();
     switch (p) {
@@ -296,6 +299,14 @@ uint8_t getFingerprintEnroll() {
     return p;
   } else if (p == FINGERPRINT_ENROLLMISMATCH) {
     Serial.println("Fingerprints did not match");
+    Firebase.setInt("Finger Print Is/Stored", 3);
+
+    delay(2000);
+    p = 0;
+    while (p != FINGERPRINT_NOFINGER) {
+      p = finger.getImage();
+    }
+
     getFingerprintEnroll();
   } else {
     Serial.println("Unknown error");
@@ -309,6 +320,8 @@ uint8_t getFingerprintEnroll() {
     
     // set value
     Firebase.setInt("Succsessfully_Stored_ID/fingerID", id);
+    Firebase.setInt("Finger Print Is/Stored", 1);
+    
     
   } else if (p == FINGERPRINT_PACKETRECIEVEERR) {
     Serial.println("Communication error");

@@ -2,20 +2,26 @@
 var homeBtn = document.getElementById("honmebtn");
 var beginSection = document.getElementById("beginSection");
 var attendnceSec = document.getElementById("attendnceSec");
+var FilterSec = document.getElementById("FilterSec");
 var enrollSec = document.getElementById("enrollSec");
 var enrollBtn = document.getElementById("EnrlDiv");
 var mrkAttnBtn = document.getElementById("MrkAttnDiv");
+var FiltrDtBtn = document.getElementById("FiltrDtDiv");
+let srchBtn = document.getElementById("serchbtn");
+let selctDate = document.getElementById("SearchDate");
 let countVrble = 0;
 
 homeBtn.addEventListener('click', home);
 enrollBtn.addEventListener('click', enrollPage);
 mrkAttnBtn.addEventListener('click', attenPage);
+FiltrDtBtn.addEventListener('click', FiltrtDtPage);
 
     
 function home(){
     beginSection.style.display = 'flex';
     enrollSec.style.display =  'none';  
     attendnceSec.style.display =  'none';  
+    FilterSec.style.display =  'none';  
 
     set(ref(db, "I  am now in the/"),{
         Mark_the_Attedance_Section: 0
@@ -32,7 +38,17 @@ function attenPage(){
     beginSection.style.display = 'none';
     enrollSec.style.display =  'none';  
     attendnceSec.style.display =  'block';  
+    set(ref(db, "I  am now in the/"),{
+        Mark_the_Attedance_Section: 1
+    });
 }  
+function FiltrtDtPage(){
+    beginSection.style.display = 'none';
+    enrollSec.style.display =  'none';  
+    attendnceSec.style.display =  'none';  
+    FilterSec.style.display =  'block';  
+
+}
     
     
     
@@ -50,6 +66,7 @@ function attenPage(){
 // filling the table
 var tbody1 = document.getElementById('tbody1');
 var tbody2 = document.getElementById('tbody2');
+var tbody3 = document.getElementById('tbody3');
 
 function AddItemToTable(fngrId, name, gen, sNum, email){
     let trow = document.createElement("tr");
@@ -132,6 +149,7 @@ function AddItemToDB(SavedId){
 
 
 function GetAllDataRealtime(){
+    RealtimeRun();
 
         const db5 = getDatabase();
         const dbRef5 = ref(db5, 'I  am now in the/Mark_the_Attedance_Section');
@@ -232,6 +250,7 @@ window.onload = GetAllDataRealtime;
 
        // insert fingerId function and cheak the validation of entered ID
            function InsertFingerId(){
+            
             if(FingerId.value == ''){
                 Swal.fire({
                     icon: 'warning',
@@ -281,8 +300,10 @@ window.onload = GetAllDataRealtime;
                              icon: 'error',
                              title: 'ID Alredy Used Or Invalid ID',
                          })
+
                             }
                 }
+                
             }
 
 
@@ -292,7 +313,7 @@ window.onload = GetAllDataRealtime;
        }
 
        function IdGenerate(){
-        console.log(typeof(FingerId.value));
+        // console.log(typeof(FingerId.value));
 
                    set(ref(db, "CurrentFingerId"),{
                        CurrentFingerId: CurrentFingerId.value,
@@ -310,11 +331,57 @@ window.onload = GetAllDataRealtime;
                    });
 
                    OldId = CurrentFingerId.value;
+
+
        }
+
+
+    //cheack the Finger print  and stored 1 on DB if the finger print is stored
+        const dbRef = ref(db,"Finger Print Is/Stored" );
+        onValue(dbRef,(snapshot)=>{
+        var IsSuccess = snapshot.val();
+        console.log(IsSuccess);
+        if(IsSuccess == 1){
+            IsvalidFingerPrint(1);
+        }
+        else if(IsSuccess == 2) {
+            IsvalidFingerPrint(2)
+        }
+        else if(IsSuccess == 3) {
+            IsvalidFingerPrint(3)
+        }
+        });
+
+        function IsvalidFingerPrint(num){
+            if(num == 1){
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Fingerprint Stored Successfully',
+                    text: 'Now Enter Student Details',
+                }) ;  
+
+            }else if (num ==2){
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Please Remove Finger And Place Again Same Finger',
+                }) 
+            }else if(num ==3){
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Finger Print Did Not Match Place Correct Finger Again',
+                }) 
+            }
+        }
+
+
 
        // insert data function
        function InsertUserInfo(){
+        set(ref(db, "Finger Print Is/"),{
+            Stored: 0,
 
+        });
            if(UserName.value == "" || SrlNum.value == "" || EmlAddrs.value ==  ""){
             Swal.fire({
                 icon: 'warning',
@@ -390,31 +457,21 @@ window.onload = GetAllDataRealtime;
 
 
     //    mark the found ID
-    function MarkTheFoundId(){
+    function MarkTheFoundId(FoundId){
         
-            const dbRef3 = ref(db,"Students" );
-            onValue(dbRef3,(snapshot)=>{
-            var FoundIdStdnt = [];
-            snapshot.forEach(childSnapshot => {
-                FoundIdStdnt.push(childSnapshot.val());
-            });
-            const dbRef4 = ref(db, 'Found_IDs/ID/');
-            onValue(dbRef4, (snapshot) => {
-                const FoundId = snapshot.val();
-                console.log("test 1");
+        console.log(FoundIdStdnt);
 
-                if(FoundId != 0){
-                    set(ref(db, "Found_IDs/"),{
-                        ID:0
-                    });
-                    UpdateAllItemToTable(FoundIdStdnt[FoundId-1]);
-                }else{
-                    startTheMarkAttn();
-                }
+        if(FoundId != 0){
+            set(ref(db, "Found_IDs/"),{
+                ID:0
             });
-            console.log("test 4");
+            UpdateAllItemToTable(FoundIdStdnt[FoundId-1]);
+        }else{
+            startTheMarkAttn();
+        }
 
-           });
+
+
         
         function UpdateAllItemToTable(Students){
             console.log("test 2");
@@ -426,6 +483,7 @@ window.onload = GetAllDataRealtime;
         function UpdateItemToTable(fngrId, name, gen, sNum, email, attmpt){
 
             console.log("test 3");
+            console.log(attmpt);
 
             
             let mydate = new Date();
@@ -488,44 +546,31 @@ window.onload = GetAllDataRealtime;
             let ReleventId,RelavantDate;
             let LstDte;
 
-            const dbRef7 = ref(db, "Attendance Sheat");
-            onValue(dbRef7,(snapshot)=>{
-                var CompleAttendanceSheat = [];
-                snapshot.forEach(childSnapshot => {
-                    CompleAttendanceSheat.push(childSnapshot.val());
-                });
-                console.log(CompleAttendanceSheat);
-                for(let j=0 ; j<CompleAttendanceSheat.length ; j++){
-                    for(let i = 1 ; i<CompleAttendanceSheat[j].length ; i++){
-                        RelavantDate = (CompleAttendanceSheat[j][i]["PersonalInfo"]["Attendance_date"]);
-                        ReleventId = (CompleAttendanceSheat[j][i]["PersonalInfo"]["FingerId"]);
-                        console.log(RelavantDate);
-                        console.log(ReleventId);
-                        console.log(fngrId);
-
-                        if(fngrId == ReleventId){
-                            LstDte = RelavantDate;
-
-                        }
-                        
-                    }
-                }
-                console.log(LstDte);
-                console.log(fullDate);
-                if(LstDte != fullDate){
-                    attmpt = 1;
-                    set(ref(db, "Students/"+ fngrId),{
-                        NameOfStd: name,
-                        FingerId: fngrId,
-                        SrlNum: sNum,
-                        EmlAddrs: email,
-                        Gender: gen,
-                        DaleyAttemptNo: attmpt
-                    }); 
+            // console.log(CompleAttendanceSheat[0].length);
+            // for(let j=0 ; j<CompleAttendanceSheat.length ; j++){
+            // console.log(CompleAttendanceSheat);
+            //     for(let i = 1 ; i<=CompleAttendanceSheat[j].length ; i++){
+            //         console.log(CompleAttendanceSheat[j][i]["PersonalInfo"]["Attendance_date"]);
+            //         RelavantDate = (CompleAttendanceSheat[j][i]["PersonalInfo"]["Attendance_date"]);
+            //         ReleventId = (CompleAttendanceSheat[j][i]["PersonalInfo"]["FingerId"]);
+            //         console.log(RelavantDate);
+            //         console.log(ReleventId);
+            //         console.log(fngrId);
+        
+            //         if(fngrId == ReleventId){
+            //             LstDte = RelavantDate;
+        
+            //         }
                     
-                }
+            //     }
+            // }
             
-            })
+            // console.log(LstDte);
+            // console.log(fullDate);
+            // if(LstDte != fullDate){
+            //     attmpt = 1;
+                
+            // }
 
 
 
@@ -550,6 +595,13 @@ window.onload = GetAllDataRealtime;
                     Attendance_date: fullDate,
     
                 })
+                set(ref(db, "Attendance Sheat/"+ fullDate + "/" + fngrId + "/" + "TimeIn"),{
+                    TimeIn: hours + ":" + min,
+
+                });
+                set(ref(db, "Attendance Sheat/"+ fullDate + "/" + fngrId + "/" + "TimeOut"),{
+                    TimeOut: "-"
+                });
 
                 set(ref(db, "Students/"+ fngrId),{
                     NameOfStd: name,
@@ -562,20 +614,14 @@ window.onload = GetAllDataRealtime;
                 set(ref(db, "Found_IDs/"),{
                     ID:0
                 });
-                set(ref(db, "Attendance Sheat/"+ fullDate + "/" + fngrId + "/" + "TimeIn"),{
-                    TimeIn: hours + ":" + min,
 
-                });
-                set(ref(db, "Attendance Sheat/"+ fullDate + "/" + fngrId + "/" + "TimeOut"),{
-                    TimeOut: "-"
-                });
                 set(ref(db, "DatesArray/"+ fullDate),{
                     fullDate
                 });
-                console.log("attmp 1 ok");
-                set(ref(db, "I  am now in the/"),{
-                    Mark_the_Attedance_Section: 1
-                });
+                // console.log("attmp 1 ok");
+                // set(ref(db, "I  am now in the/"),{
+                //     Mark_the_Attedance_Section: 1
+                // });
                 location.reload();
                 attenPage();
                 InsertChoose2();
@@ -590,25 +636,25 @@ window.onload = GetAllDataRealtime;
                     Attendance_date: fullDate,
     
                 })
-
+                set(ref(db, "Attendance Sheat/"+ fullDate + "/" + fngrId + "/" + "TimeOut"),{
+                    TimeOut: hours + ":" + min,
+                });
                 set(ref(db, "Students/"+ fngrId),{
                     NameOfStd: name,
                     FingerId: fngrId,
                     SrlNum: sNum,
                     EmlAddrs: email,
                     Gender: gen,
-                    DaleyAttemptNo: 3
+                    DaleyAttemptNo: 1
                 });
-                set(ref(db, "Attendance Sheat/"+ fullDate + "/" + fngrId + "/" + "TimeOut"),{
-                    TimeOut: hours + ":" + min,
-                });
+
                 set(ref(db, "Found_IDs/"),{
                     ID:0
                 });
                 console.log("attmp 2 ok");
-                set(ref(db, "I  am now in the/"),{
-                    Mark_the_Attedance_Section: 1
-                });
+                // set(ref(db, "I  am now in the/"),{
+                //     Mark_the_Attedance_Section: 1
+                // });
                 location.reload();
             }else{
                 Swal.fire({
@@ -641,6 +687,8 @@ onValue(dbRef7, (snapshot) => {
 
         let SingleDate = DatesArrayLst[i]["fullDate"];
         console.log(SingleDate);
+
+        // ------filtering the paticular date information
 
         
         // -----------send data to mark attedance table-----------------------
@@ -771,3 +819,140 @@ onValue(dbRef7, (snapshot) => {
     
 // }
 
+
+
+var CompleAttendanceSheat = [];
+var FoundIdStdnt = [];
+
+
+function RealtimeRun(){
+
+    const dbRef3 = ref(db,"Students" );
+    onValue(dbRef3,(snapshot)=>{
+    FoundIdStdnt = [];
+    snapshot.forEach(childSnapshot => {
+        FoundIdStdnt.push(childSnapshot.val());
+    });
+    
+    
+    const dbRef4 = ref(db, 'Found_IDs/ID/');
+    onValue(dbRef4, (snapshot) => {
+        const FoundId = snapshot.val();
+        console.log("test 1");
+    
+    
+    });
+    console.log(FoundIdStdnt);
+    
+    });
+    
+    
+    
+    
+    const dbRef8 = ref(db, "Attendance Sheat");
+    onValue(dbRef8,(snapshot)=>{
+        CompleAttendanceSheat = [];
+        snapshot.forEach(childSnapshot => {
+            CompleAttendanceSheat.push(childSnapshot.val());
+        });
+    
+        console.log(CompleAttendanceSheat);
+    
+    })
+    
+}
+
+
+
+
+
+// -------------------filter page------------------------
+
+function dateshow(){
+    let crrntDate = selctDate.value;
+    let dataFond;
+    console.log(typeof(crrntDate));
+    console.log(crrntDate);
+
+    tbody3.innerHTML= "";
+    const dbRef7 = ref(db, "DatesArray");
+    onValue(dbRef7, (snapshot) => {
+    var DatesArrayLst = [];
+    snapshot.forEach(childSnapshot => {
+        DatesArrayLst.push(childSnapshot.val());
+    })
+    // console.log(DatesArrayLst[1]["fullDate"]);
+    console.log(DatesArrayLst.length);
+    for(let i=0 ; i<DatesArrayLst.length ; i++){
+
+        let SingleDate = DatesArrayLst[i]["fullDate"];
+        console.log(SingleDate);
+
+        // ------filtering the paticular date information
+        if(crrntDate == SingleDate){
+            dataFond=true;
+            const dbRef6 = ref(db, "Attendance Sheat/" + SingleDate);
+            onValue(dbRef6,(snapshot)=>{
+                var AttendanceSheat = [];
+                snapshot.forEach(childSnapshot => {
+                    AttendanceSheat.push(childSnapshot.val());
+                });
+                console.log(AttendanceSheat);
+                console.log(AttendanceSheat.length);
+                AddAllItemToAttedanceTable(AttendanceSheat);
+    
+            })
+    
+            function AddAllItemToAttedanceTable(AttendanceSheat){
+                AttendanceSheat.forEach(element => {
+                    AddItemToAttedanceTable(element.PersonalInfo.Attendance_date, element.PersonalInfo.Gender, element.PersonalInfo.EmlAddrs, element.PersonalInfo.SrlNum, element.PersonalInfo.NameOfStd, element.PersonalInfo.FingerId,
+                        element.TimeIn.TimeIn, element.TimeOut.TimeOut)
+                })
+            }
+                
+    
+            function AddItemToAttedanceTable(attnDate, gen, email, srlnum, name, fngrid, timein, timeout){
+                let trow = document.createElement("tr");
+                let td1 = document.createElement('td');
+                let td2 = document.createElement('td');
+                let td3 = document.createElement('td');
+                let td4 = document.createElement('td');
+                let td5 = document.createElement('td');
+                let td6 = document.createElement('td');
+                let td7 = document.createElement('td');
+                let td8 = document.createElement('td');
+    
+                td1.innerHTML = fngrid;
+                td2.innerHTML = name;
+                td3.innerHTML = email;
+                td4.innerHTML = gen;
+                td5.innerHTML = srlnum;
+                td6.innerHTML = attnDate;
+                td7.innerHTML = timein;
+                td8.innerHTML = timeout;
+    
+                trow.appendChild(td1);
+                trow.appendChild(td2);
+                trow.appendChild(td3);
+                trow.appendChild(td4);
+                trow.appendChild(td5);
+                trow.appendChild(td6);
+                trow.appendChild(td7);
+                trow.appendChild(td8);
+    
+                tbody3.appendChild(trow);
+    
+                
+            }
+        }
+    }
+    if(dataFond != true){
+        Swal.fire({
+            icon: 'warning',
+            title: 'No Relevent Data',
+          })
+    }
+});
+
+}
+srchBtn.addEventListener('click', dateshow);
