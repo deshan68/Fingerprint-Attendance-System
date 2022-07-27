@@ -149,7 +149,7 @@ function AddItemToDB(SavedId){
 
 
 function GetAllDataRealtime(){
-    RealtimeRun();
+    
 
         const db5 = getDatabase();
         const dbRef5 = ref(db5, 'I  am now in the/Mark_the_Attedance_Section');
@@ -547,45 +547,43 @@ window.onload = GetAllDataRealtime;
             let ReleventId,RelavantDate;
             let LstDte;
 
-            // console.log(CompleAttendanceSheat[0].length);
-            // for(let j=0 ; j<CompleAttendanceSheat.length ; j++){
-            // console.log(CompleAttendanceSheat);
-            //     for(let i = 1 ; i<=CompleAttendanceSheat[j].length ; i++){
-            //         console.log(CompleAttendanceSheat[j][i]["PersonalInfo"]["Attendance_date"]);
-            //         RelavantDate = (CompleAttendanceSheat[j][i]["PersonalInfo"]["Attendance_date"]);
-            //         ReleventId = (CompleAttendanceSheat[j][i]["PersonalInfo"]["FingerId"]);
-            //         console.log(RelavantDate);
-            //         console.log(ReleventId);
-            //         console.log(fngrId);
+            const dbRef8 = ref(db, "Attendance Sheat");
+            onValue(dbRef8,(snapshot)=>{
+                CompleAttendanceSheat = [];
+                snapshot.forEach(childSnapshot => {
+                    CompleAttendanceSheat.push(childSnapshot.val());
         
-            //         if(fngrId == ReleventId){
-            //             LstDte = RelavantDate;
-        
-            //         }
-                    
-            //     }
-            // }
+                });
             
-            // console.log(LstDte);
-            // console.log(fullDate);
-            // if(LstDte != fullDate){
-            //     attmpt = 1;
+                console.log(CompleAttendanceSheat);
+                console.log(CompleAttendanceSheat[0].length);
+                for(let j=0 ; j<CompleAttendanceSheat.length ; j++){
+                console.log(CompleAttendanceSheat);
+                    for(let i = 1 ; i<CompleAttendanceSheat[j].length ; i++){
+                        console.log(i);
+                        console.log(j);
+                        console.log(CompleAttendanceSheat[j][i]["PersonalInfo"]["Attendance_date"]);
+                        RelavantDate = CompleAttendanceSheat[j][i]["PersonalInfo"]["Attendance_date"];
+                        ReleventId = CompleAttendanceSheat[j][i]["PersonalInfo"]["FingerId"];
+                        console.log(RelavantDate);
+                        console.log(ReleventId);
+                        console.log(fngrId);
+            
+                        if(fngrId == ReleventId){
+                            LstDte = RelavantDate;
+            
+                        }
+                        
+                    }
+                }
                 
-            // }
+                console.log(LstDte);
+                console.log(fullDate);
+                if(LstDte != fullDate){
+                    attmpt = 1;
+                }
 
-
-
-
-            
-
-            // .then(()=>{
-            //     alert("Time in stored successfully");
-            // })
-            // .catch((error)=>{
-            //     alert("unsuccessfull, error"+error);
-            // }); 
-
-
+                console.log(attmpt);
             if(attmpt == 1){
                 set(ref(db, "Attendance Sheat/"+ fullDate + "/" + fngrId + "/" + "PersonalInfo"),{
                     NameOfStd: name,
@@ -646,7 +644,7 @@ window.onload = GetAllDataRealtime;
                     SrlNum: sNum,
                     EmlAddrs: email,
                     Gender: gen,
-                    DaleyAttemptNo: 1
+                    DaleyAttemptNo: 3
                 });
 
                 set(ref(db, "Found_IDs/"),{
@@ -669,6 +667,25 @@ window.onload = GetAllDataRealtime;
                 console.log(fullDate);
 
             }
+            
+            })
+
+
+
+
+
+
+            
+
+            // .then(()=>{
+            //     alert("Time in stored successfully");
+            // })
+            // .catch((error)=>{
+            //     alert("unsuccessfull, error"+error);
+            // }); 
+
+
+
 
         }
         
@@ -826,7 +843,7 @@ var CompleAttendanceSheat = [];
 var FoundIdStdnt = [];
 
 
-function RealtimeRun(){
+
 
     const dbRef3 = ref(db,"Students" );
     onValue(dbRef3,(snapshot)=>{
@@ -850,18 +867,9 @@ function RealtimeRun(){
     
     
     
-    const dbRef8 = ref(db, "Attendance Sheat");
-    onValue(dbRef8,(snapshot)=>{
-        CompleAttendanceSheat = [];
-        snapshot.forEach(childSnapshot => {
-            CompleAttendanceSheat.push(childSnapshot.val());
-        });
+
     
-        console.log(CompleAttendanceSheat);
-    
-    })
-    
-}
+
 
 
 
@@ -871,15 +879,12 @@ function RealtimeRun(){
 
 function dateshow(){
     let chooseDate = selctDate.value;
-    console.log(chooseDate);
     let dataFond;
-    console.log(typeof(crrntDate));
-    console.log(typeof(IndexNum.value));
     // let InputIndxNum = parseInt(IndexNum);
     let ChooseIndxNum = IndexNum.value;
     var AttendanceSheat = [];
 
-
+// when choose date
     if(chooseDate != '' && ChooseIndxNum == ''){
 
         tbody3.innerHTML= "";
@@ -890,11 +895,9 @@ function dateshow(){
             DatesArrayLst.push(childSnapshot.val());
         })
         // console.log(DatesArrayLst[1]["fullDate"]);
-        console.log(DatesArrayLst.length);
         for(let i=0 ; i<DatesArrayLst.length ; i++){
     
             let SingleDate = DatesArrayLst[i]["fullDate"];
-            console.log(DatesArrayLst);
     
     
             // ------filtering the paticular date information by date
@@ -905,15 +908,12 @@ function dateshow(){
                     snapshot.forEach(childSnapshot => {
                         AttendanceSheat.push(childSnapshot.val());
                     });
-                    console.log(AttendanceSheat);
-                    console.log(AttendanceSheat.length);
                     AddAllItemToAttedanceTable(AttendanceSheat);
         
                 })
         
                 function AddAllItemToAttedanceTable(AttendanceSheat){
                     AttendanceSheat.forEach(element => {
-                        console.log(element.PersonalInfo.SrlNum);
                         AddItemToAttedanceTable(element.PersonalInfo.Attendance_date, element.PersonalInfo.Gender, element.PersonalInfo.EmlAddrs, element.PersonalInfo.SrlNum, element.PersonalInfo.NameOfStd, element.PersonalInfo.FingerId,
                             element.TimeIn.TimeIn, element.TimeOut.TimeOut)
                     });
@@ -960,10 +960,9 @@ function dateshow(){
                 icon: 'warning',
                 title: 'No Relevent Data',
               });
-
         }
         });
-
+// when choose index number
     }else if(chooseDate == '' && ChooseIndxNum != ''){
         tbody3.innerHTML='';
         const dbRef6 = ref(db, "Attendance Sheat/");
@@ -979,16 +978,25 @@ function dateshow(){
         function AddAllItemToAttedanceTable(AttendanceSheat){
             AttendanceSheat.forEach(element => {
                     if(ChooseIndxNum == element.PersonalInfo.SrlNum){
+                        dataFond=true;
+
                         AddItemToAttedanceTable(element.PersonalInfo.Attendance_date, element.PersonalInfo.Gender, element.PersonalInfo.EmlAddrs, element.PersonalInfo.SrlNum, element.PersonalInfo.NameOfStd, element.PersonalInfo.FingerId,
                             element.TimeIn.TimeIn, element.TimeOut.TimeOut);
                     }else{
-                        dataFond=false;
+
                     }
             });
-
+            if(dataFond != true){
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'No Relevent Data',
+                  });
+                }
         }
         
+        
         function AddItemToAttedanceTable(attnDate, gen, email, srlnum, name, fngrid, timein, timeout){
+
             let trow = document.createElement("tr");
             let td1 = document.createElement('td');
             let td2 = document.createElement('td');
@@ -1020,14 +1028,10 @@ function dateshow(){
             tbody3.appendChild(trow);
             
         }
-        if(dataFond != true){
-            Swal.fire({
-                icon: 'warning',
-                title: 'No Relevent Data',
-              });
 
-        }
+        
 
+// when choose date and index number simultaniusly
     }else if(chooseDate != '' && ChooseIndxNum != ''){
         tbody3.innerHTML= "";
         const dbRef7 = ref(db, "DatesArray");
@@ -1041,7 +1045,6 @@ function dateshow(){
         for(let i=0 ; i<DatesArrayLst.length ; i++){
     
             let SingleDate = DatesArrayLst[i]["fullDate"];
-            console.log(DatesArrayLst);
     
     
             // ------filtering the paticular date information by date
@@ -1051,8 +1054,6 @@ function dateshow(){
                     snapshot.forEach(childSnapshot => {
                         AttendanceSheat.push(childSnapshot.val());
                     });
-                    console.log(AttendanceSheat);
-                    console.log(AttendanceSheat.length);
                     AddAllItemToAttedanceTable(AttendanceSheat);
         
                 })
@@ -1060,12 +1061,9 @@ function dateshow(){
                 function AddAllItemToAttedanceTable(AttendanceSheat){
                     AttendanceSheat.forEach(element => {
                         if(ChooseIndxNum == element.PersonalInfo.SrlNum){
-                            dataFond =true;
-
                             AddItemToAttedanceTable(element.PersonalInfo.Attendance_date, element.PersonalInfo.Gender, element.PersonalInfo.EmlAddrs, element.PersonalInfo.SrlNum, element.PersonalInfo.NameOfStd, element.PersonalInfo.FingerId,
                                 element.TimeIn.TimeIn, element.TimeOut.TimeOut);
-                        }
-                        else{
+                                dataFond =true;
                         }
                     });
                 }
@@ -1119,22 +1117,6 @@ function dateshow(){
           });
     }
 
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
 }
+
 srchBtn.addEventListener('click', dateshow);
