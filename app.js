@@ -234,6 +234,7 @@ window.onload = GetAllDataRealtime;
 
        //reference
        var FingerId = document.getElementById("FingerId");
+       var IndexNum = document.getElementById("IndxNum");
        var CurrentFingerId  = FingerId;
        var OldId = "-1";
        var UserName = document.getElementById("UserName");
@@ -869,90 +870,271 @@ function RealtimeRun(){
 // -------------------filter page------------------------
 
 function dateshow(){
-    let crrntDate = selctDate.value;
+    let chooseDate = selctDate.value;
+    console.log(chooseDate);
     let dataFond;
     console.log(typeof(crrntDate));
-    console.log(crrntDate);
+    console.log(typeof(IndexNum.value));
+    // let InputIndxNum = parseInt(IndexNum);
+    let ChooseIndxNum = IndexNum.value;
+    var AttendanceSheat = [];
 
-    tbody3.innerHTML= "";
-    const dbRef7 = ref(db, "DatesArray");
-    onValue(dbRef7, (snapshot) => {
-    var DatesArrayLst = [];
-    snapshot.forEach(childSnapshot => {
-        DatesArrayLst.push(childSnapshot.val());
-    })
-    // console.log(DatesArrayLst[1]["fullDate"]);
-    console.log(DatesArrayLst.length);
-    for(let i=0 ; i<DatesArrayLst.length ; i++){
 
-        let SingleDate = DatesArrayLst[i]["fullDate"];
-        console.log(SingleDate);
+    if(chooseDate != '' && ChooseIndxNum == ''){
 
-        // ------filtering the paticular date information
-        if(crrntDate == SingleDate){
-            dataFond=true;
-            const dbRef6 = ref(db, "Attendance Sheat/" + SingleDate);
-            onValue(dbRef6,(snapshot)=>{
-                var AttendanceSheat = [];
-                snapshot.forEach(childSnapshot => {
-                    AttendanceSheat.push(childSnapshot.val());
-                });
-                console.log(AttendanceSheat);
-                console.log(AttendanceSheat.length);
-                AddAllItemToAttedanceTable(AttendanceSheat);
+        tbody3.innerHTML= "";
+        const dbRef7 = ref(db, "DatesArray");
+        onValue(dbRef7, (snapshot) => {
+        var DatesArrayLst = [];
+        snapshot.forEach(childSnapshot => {
+            DatesArrayLst.push(childSnapshot.val());
+        })
+        // console.log(DatesArrayLst[1]["fullDate"]);
+        console.log(DatesArrayLst.length);
+        for(let i=0 ; i<DatesArrayLst.length ; i++){
     
-            })
+            let SingleDate = DatesArrayLst[i]["fullDate"];
+            console.log(DatesArrayLst);
     
-            function AddAllItemToAttedanceTable(AttendanceSheat){
-                AttendanceSheat.forEach(element => {
-                    AddItemToAttedanceTable(element.PersonalInfo.Attendance_date, element.PersonalInfo.Gender, element.PersonalInfo.EmlAddrs, element.PersonalInfo.SrlNum, element.PersonalInfo.NameOfStd, element.PersonalInfo.FingerId,
-                        element.TimeIn.TimeIn, element.TimeOut.TimeOut)
+    
+            // ------filtering the paticular date information by date
+            if(chooseDate == SingleDate){
+                dataFond=true;
+                const dbRef6 = ref(db, "Attendance Sheat/" + SingleDate);
+                onValue(dbRef6,(snapshot)=>{
+                    snapshot.forEach(childSnapshot => {
+                        AttendanceSheat.push(childSnapshot.val());
+                    });
+                    console.log(AttendanceSheat);
+                    console.log(AttendanceSheat.length);
+                    AddAllItemToAttedanceTable(AttendanceSheat);
+        
                 })
-            }
-                
-    
-            function AddItemToAttedanceTable(attnDate, gen, email, srlnum, name, fngrid, timein, timeout){
-                let trow = document.createElement("tr");
-                let td1 = document.createElement('td');
-                let td2 = document.createElement('td');
-                let td3 = document.createElement('td');
-                let td4 = document.createElement('td');
-                let td5 = document.createElement('td');
-                let td6 = document.createElement('td');
-                let td7 = document.createElement('td');
-                let td8 = document.createElement('td');
-    
-                td1.innerHTML = fngrid;
-                td2.innerHTML = name;
-                td3.innerHTML = email;
-                td4.innerHTML = gen;
-                td5.innerHTML = srlnum;
-                td6.innerHTML = attnDate;
-                td7.innerHTML = timein;
-                td8.innerHTML = timeout;
-    
-                trow.appendChild(td1);
-                trow.appendChild(td2);
-                trow.appendChild(td3);
-                trow.appendChild(td4);
-                trow.appendChild(td5);
-                trow.appendChild(td6);
-                trow.appendChild(td7);
-                trow.appendChild(td8);
-    
-                tbody3.appendChild(trow);
-    
-                
+        
+                function AddAllItemToAttedanceTable(AttendanceSheat){
+                    AttendanceSheat.forEach(element => {
+                        console.log(element.PersonalInfo.SrlNum);
+                        AddItemToAttedanceTable(element.PersonalInfo.Attendance_date, element.PersonalInfo.Gender, element.PersonalInfo.EmlAddrs, element.PersonalInfo.SrlNum, element.PersonalInfo.NameOfStd, element.PersonalInfo.FingerId,
+                            element.TimeIn.TimeIn, element.TimeOut.TimeOut)
+                    });
+                }
+                    
+        
+                function AddItemToAttedanceTable(attnDate, gen, email, srlnum, name, fngrid, timein, timeout){
+                    let trow = document.createElement("tr");
+                    let td1 = document.createElement('td');
+                    let td2 = document.createElement('td');
+                    let td3 = document.createElement('td');
+                    let td4 = document.createElement('td');
+                    let td5 = document.createElement('td');
+                    let td6 = document.createElement('td');
+                    let td7 = document.createElement('td');
+                    let td8 = document.createElement('td');
+        
+                    td1.innerHTML = fngrid;
+                    td2.innerHTML = name;
+                    td3.innerHTML = email;
+                    td4.innerHTML = gen;
+                    td5.innerHTML = srlnum;
+                    td6.innerHTML = attnDate;
+                    td7.innerHTML = timein;
+                    td8.innerHTML = timeout;
+        
+                    trow.appendChild(td1);
+                    trow.appendChild(td2);
+                    trow.appendChild(td3);
+                    trow.appendChild(td4);
+                    trow.appendChild(td5);
+                    trow.appendChild(td6);
+                    trow.appendChild(td7);
+                    trow.appendChild(td8);
+        
+                    tbody3.appendChild(trow);
+        
+                    
+                }
             }
         }
-    }
-    if(dataFond != true){
+        if(dataFond != true){
+            Swal.fire({
+                icon: 'warning',
+                title: 'No Relevent Data',
+              });
+
+        }
+        });
+
+    }else if(chooseDate == '' && ChooseIndxNum != ''){
+        tbody3.innerHTML='';
+        const dbRef6 = ref(db, "Attendance Sheat/");
+        onValue(dbRef6,(snapshot)=>{
+            snapshot.forEach(childSnapshot => {
+                AttendanceSheat.push(childSnapshot.val());
+            });
+            for(let i=0 ; i<AttendanceSheat.length ; i++){
+                AddAllItemToAttedanceTable(AttendanceSheat[i]);
+            }
+        })
+
+        function AddAllItemToAttedanceTable(AttendanceSheat){
+            AttendanceSheat.forEach(element => {
+                    if(ChooseIndxNum == element.PersonalInfo.SrlNum){
+                        AddItemToAttedanceTable(element.PersonalInfo.Attendance_date, element.PersonalInfo.Gender, element.PersonalInfo.EmlAddrs, element.PersonalInfo.SrlNum, element.PersonalInfo.NameOfStd, element.PersonalInfo.FingerId,
+                            element.TimeIn.TimeIn, element.TimeOut.TimeOut);
+                    }else{
+                        dataFond=false;
+                    }
+            });
+
+        }
+        
+        function AddItemToAttedanceTable(attnDate, gen, email, srlnum, name, fngrid, timein, timeout){
+            let trow = document.createElement("tr");
+            let td1 = document.createElement('td');
+            let td2 = document.createElement('td');
+            let td3 = document.createElement('td');
+            let td4 = document.createElement('td');
+            let td5 = document.createElement('td');
+            let td6 = document.createElement('td');
+            let td7 = document.createElement('td');
+            let td8 = document.createElement('td');
+
+            td1.innerHTML = fngrid;
+            td2.innerHTML = name;
+            td3.innerHTML = email;
+            td4.innerHTML = gen;
+            td5.innerHTML = srlnum;
+            td6.innerHTML = attnDate;
+            td7.innerHTML = timein;
+            td8.innerHTML = timeout;
+
+            trow.appendChild(td1);
+            trow.appendChild(td2);
+            trow.appendChild(td3);
+            trow.appendChild(td4);
+            trow.appendChild(td5);
+            trow.appendChild(td6);
+            trow.appendChild(td7);
+            trow.appendChild(td8);
+
+            tbody3.appendChild(trow);
+            
+        }
+        if(dataFond != true){
+            Swal.fire({
+                icon: 'warning',
+                title: 'No Relevent Data',
+              });
+
+        }
+
+    }else if(chooseDate != '' && ChooseIndxNum != ''){
+        tbody3.innerHTML= "";
+        const dbRef7 = ref(db, "DatesArray");
+        onValue(dbRef7, (snapshot) => {
+        var DatesArrayLst = [];
+        snapshot.forEach(childSnapshot => {
+            DatesArrayLst.push(childSnapshot.val());
+        })
+        // console.log(DatesArrayLst[1]["fullDate"]);
+        console.log(DatesArrayLst.length);
+        for(let i=0 ; i<DatesArrayLst.length ; i++){
+    
+            let SingleDate = DatesArrayLst[i]["fullDate"];
+            console.log(DatesArrayLst);
+    
+    
+            // ------filtering the paticular date information by date
+            if(chooseDate == SingleDate){
+                const dbRef6 = ref(db, "Attendance Sheat/" + SingleDate);
+                onValue(dbRef6,(snapshot)=>{
+                    snapshot.forEach(childSnapshot => {
+                        AttendanceSheat.push(childSnapshot.val());
+                    });
+                    console.log(AttendanceSheat);
+                    console.log(AttendanceSheat.length);
+                    AddAllItemToAttedanceTable(AttendanceSheat);
+        
+                })
+        
+                function AddAllItemToAttedanceTable(AttendanceSheat){
+                    AttendanceSheat.forEach(element => {
+                        if(ChooseIndxNum == element.PersonalInfo.SrlNum){
+                            dataFond =true;
+
+                            AddItemToAttedanceTable(element.PersonalInfo.Attendance_date, element.PersonalInfo.Gender, element.PersonalInfo.EmlAddrs, element.PersonalInfo.SrlNum, element.PersonalInfo.NameOfStd, element.PersonalInfo.FingerId,
+                                element.TimeIn.TimeIn, element.TimeOut.TimeOut);
+                        }
+                        else{
+                        }
+                    });
+                }
+                    
+        
+                function AddItemToAttedanceTable(attnDate, gen, email, srlnum, name, fngrid, timein, timeout){
+                    let trow = document.createElement("tr");
+                    let td1 = document.createElement('td');
+                    let td2 = document.createElement('td');
+                    let td3 = document.createElement('td');
+                    let td4 = document.createElement('td');
+                    let td5 = document.createElement('td');
+                    let td6 = document.createElement('td');
+                    let td7 = document.createElement('td');
+                    let td8 = document.createElement('td');
+        
+                    td1.innerHTML = fngrid;
+                    td2.innerHTML = name;
+                    td3.innerHTML = email;
+                    td4.innerHTML = gen;
+                    td5.innerHTML = srlnum;
+                    td6.innerHTML = attnDate;
+                    td7.innerHTML = timein;
+                    td8.innerHTML = timeout;
+        
+                    trow.appendChild(td1);
+                    trow.appendChild(td2);
+                    trow.appendChild(td3);
+                    trow.appendChild(td4);
+                    trow.appendChild(td5);
+                    trow.appendChild(td6);
+                    trow.appendChild(td7);
+                    trow.appendChild(td8);
+        
+                    tbody3.appendChild(trow);
+        
+                }
+            }
+        }
+        if(dataFond != true){
+            Swal.fire({
+                icon: 'warning',
+                title: 'No Relevent Data',
+              });
+        }
+        });
+    }else{
         Swal.fire({
             icon: 'warning',
-            title: 'No Relevent Data',
-          })
+            title: 'Please Enter Date Or Index Number',
+          });
     }
-});
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
 
 }
 srchBtn.addEventListener('click', dateshow);
