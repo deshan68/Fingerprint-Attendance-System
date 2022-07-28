@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        body{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+        }
+        input{
+            width: 35vw;
+        }
+    </style>
+</head>
+<body>
+    <div class="mb-5">
+        <h3 class="mb-3">Sign Up</h3>
+        <input type="text" placeholder="Fullname" id="nameInp" class="from-control mb-3 w-100"><br>
+        <input type="text" placeholder="Email" id="emailInp" class="from-control mb-3"><br>
+        <input type="text" placeholder="Username" id="userInp" class="from-control mb-3"><br>
+        <input type="password" placeholder="Password" id="passInp" class="from-control mb-3"><br>
+        <button type="text" id="sub_btn" class="btn btn-outline-promary mb-3 w-100">Sign Up</button><br>
+        <a href="login.html" class="badge badge-primary py-1 w-100">Already have an account?</a>
+    </div>
+
+
+    <script type="module">
+
+// ---------------------------------------the references------------------------------------
+        let name = document.getElementById('nameInp');
+        let email = document.getElementById('emailInp');
+        let username = document.getElementById('userInp');
+        let pass = document.getElementById('passInp');
+        let submit = document.getElementById('sub_btn');
+
+// ----------------------validations------------------------------------
+
+        function isEmptyOrSpace(str){
+            return str === null || str.match(/^ *$/) !== null;
+        }
+
+
+        function Validation(){
+            let nameregex = /^[a-zA-Z]+$/;
+            let emailregex = /^[a-zA-Z0-9]+@(gmail|yahoo|outlook)\.com$/;
+            let userregex = /^[a-zA-Z0-9]{5,}$/;
+
+            if(isEmptyOrSpace(name.value) || isEmptyOrSpace(email.value) || isEmptyOrSpace(username.value) || isEmptyOrSpace(pass.value)){
+                alert("you cannot left any feild empty");
+                return false;
+            }
+
+            if(!nameregex.test(name.value)){
+                alert("the name should only containalphabets!");
+                return false;
+            }
+
+            if(!emailregex.test(email.value)){
+                alert("Enter a valid email");
+                return false;
+            }
+
+            if(!userregex.test(username.value)){
+                alert("Enter valid user name");
+                return false;
+            }
+
+            return true;
+        }
+// --------------------------------register user to firebase---------------------
+        function RegisterUser(){
+            if(!Validation()){
+                return;
+            };
+            const dbRef = ref(db);
+
+            get(child(dbRef, "usersList/" + username.value)).then((snapshot)=> {
+
+                if(snapshot.exists()){
+                    alert("Account already exists");
+                }
+                else{
+                    set(ref(db, "usersList/" + username.value),
+                    {
+                        fullname: name.value, 
+                        email: email.value,
+                        username: username.value,
+                        password: encPass()
+                    })
+                    .then(()=> {
+                        alert("user added succeessfully");
+                    })
+                    .catch((error)=>{
+                        alert("error" + error );
+                    })
+                }
+            });
+        }
+
+// -------------------------------encription---------------------------------
+
+        function encPass(){
+            var pass12 = CryptoJS.AES.encrypt(pass.value, pass.value)
+            return pass12.toString();
+        }
+
+
+// ------------------------------------------assign the eevents------------
+    submit.addEventListener('click', RegisterUser);
+
+
+// -------------------------------------------firebase config------------------------------------------
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+        apiKey: "AIzaSyAajDAUJIm5yI0uys_pPwukzIyZA1LEbEI",
+        authDomain: "fingerprint-b800f.firebaseapp.com",
+        databaseURL: "https://fingerprint-b800f-default-rtdb.firebaseio.com",
+        projectId: "fingerprint-b800f",
+        storageBucket: "fingerprint-b800f.appspot.com",
+        messagingSenderId: "755180169533",
+        appId: "1:755180169533:web:951119214e0bafaf58bd54",
+        measurementId: "G-7TKXBSPVDC",
+      };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        import{getDatabase, ref, set, child, get} from "https://www.gstatic.com/firebasejs/9.6.6/firebase-database.js";
+        const analytics = getAnalytics(app);
+        const db = getDatabase();
+</script>
+</body>
+</html>

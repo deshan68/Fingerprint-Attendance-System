@@ -1,3 +1,152 @@
+//--------------------------------------------------references
+let userlink = document.getElementById('userlink');
+let signoutlink = document.getElementById('signoutlink');
+let RegLogInSec = document.getElementById('RegLogInSec');
+let currentUser = null;
+
+
+// ------------------------------------------------------functions
+
+function getUsername(){
+    let keepLoggedIn = localStorage.getItem('keepLoggedIn');
+
+    if(keepLoggedIn == "yes"){
+      currentUser = JSON.parse(localStorage.getItem('user'));
+
+    }
+    else{
+      currentUser = JSON.parse(sessionStorage.getItem('user'));
+    }
+  }
+
+  function Signout(){
+    sessionStorage.removeItem('user');
+    localStorage.removeItem('user');
+    localStorage.removeItem('keepLoggedIn');
+    window.location = "index.html";
+
+  }
+
+
+// -------------------------------window onload-------------------------
+
+function OnldFunction(){
+    userlink.innerHTML= "create new account";
+
+    getUsername();
+    if(currentUser == null){
+      userlink.innerHTML= "create new account";
+    //   userlink.classList.replace("nav-link", "btn");
+    //   userlink.classList.add("btn-primary");
+      userlink.href = "register.html";
+
+      signoutlink.innerHTML = "LogIN";
+    //   signoutlink.classList.replace("nav-link", "btn");
+    //   signoutlink.classList.add("btn-success");
+      signoutlink.href="login.html";
+
+      beginSection.style.display = 'none';
+
+      signoutlink.style.display = 'none';
+
+      userlink.style.display = 'none';
+
+    }
+    else{
+
+      userlink.innerHTML= currentUser.username;
+    //   header.innerHTML = "welcome " + currentUser.fullname;
+    //   userlink.classList.replace( "btn","nav-link");
+    //   userlink.classList.remove("btn-primary");
+      userlink.href = "#";
+
+      signoutlink.innerHTML = "SignOut";
+    //   signoutlink.classList.replace("btn","nav-link");
+    //   signoutlink.classList.add("btn-success");
+      signoutlink.href="index.html";
+
+      beginSection.style.display = 'flex';
+
+      RegLogInSec.style.display = 'none';
+
+
+    }
+  }
+
+
+
+signoutlink.addEventListener('click', Signout)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //references
 var homeBtn = document.getElementById("honmebtn");
 var beginSection = document.getElementById("beginSection");
@@ -149,7 +298,7 @@ function AddItemToDB(SavedId){
 
 
 function GetAllDataRealtime(){
-    
+    OnldFunction();
 
         const db5 = getDatabase();
         const dbRef5 = ref(db5, 'I  am now in the/Mark_the_Attedance_Section');

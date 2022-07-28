@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log In</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        body{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+        }
+        input{
+            width: 35vw;
+        }
+    </style>
+</head>
+<body>
+    <div class="mb-5">
+        <h3 class="mb-3">Login</h3>
+        <input type="text" placeholder="Username" id="userInp" class="from-control mb-3"><br>
+        <input type="text" placeholder="Password" id="passInp" class="from-control mb-3"><br>
+        <div class="form-check form-switch">
+            <input class="custom-control-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+            <label class="custom-control-label" for="flexSwitchCheckDefault">Keep me Logged In</label>
+          </div>
+        <button type="text" id="sub_btn" class="btn btn-outline-promary mb-3 w-100">Log in</button><br>
+        <a href="register.html" class="badge badge-primary py-1 w-100">Want to create a new account?</a>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script type="module">
+// -------------------------------------------firebase config------------------------------------------
+
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+        apiKey: "AIzaSyAajDAUJIm5yI0uys_pPwukzIyZA1LEbEI",
+        authDomain: "fingerprint-b800f.firebaseapp.com",
+        databaseURL: "https://fingerprint-b800f-default-rtdb.firebaseio.com",
+        projectId: "fingerprint-b800f",
+        storageBucket: "fingerprint-b800f.appspot.com",
+        messagingSenderId: "755180169533",
+        appId: "1:755180169533:web:951119214e0bafaf58bd54",
+        measurementId: "G-7TKXBSPVDC",
+      };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        import{ getDatabase, ref, set, child, get } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-database.js"
+
+        const db = getDatabase();
+
+
+        // ---------------------------------------the references------------------------------------
+
+        let username = document.getElementById('userInp');
+        let pass = document.getElementById('passInp');
+        let submit = document.getElementById('sub_btn');
+
+        // -----------------------------------------authentication process---------------------
+
+        function AuthenticateUser(){
+            const dbref = ref(db);
+
+            get(child(dbref, "usersList/" + username.value)).then((snapshot)=> {
+
+                if(snapshot.exists()){
+                    let dbpass = decPass(snapshot.val().password);
+                    if(dbpass == pass.value){
+                        login(snapshot.val());
+                    }
+                    else{
+                        alert("use");
+                    }
+                }
+                else{
+                    alert("user name or pw is invalid");
+                }
+                });
+        }
+
+
+// -------------------------------------------------------------decrypt process
+        
+        function decPass(dbpass){
+                    var pass12 = CryptoJS.AES.decrypt(dbpass, pass.value)
+                    return pass12.toString(CryptoJS.enc.Utf8);
+                }
+
+// ------------------------------login
+                
+        function login(user){
+            let keepLoggedIn = document.getElementById('flexSwitchCheckDefault').checked;
+
+            if(!keepLoggedIn){
+                sessionStorage.setItem('user', JSON.stringify(user));
+                window.location = "index.html";
+            }
+
+            else{
+                localStorage.setItem('keeoLoggedIn', 'yes');
+                localStorage.setItem('user', JSON.stringify(user));
+                window.location = 'index.html';
+            }
+        }
+
+
+// ------------------------------------------assign the eevents------------
+submit.addEventListener('click', AuthenticateUser);
+
+      </script>
+</body>
+</html>
