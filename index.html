@@ -15,18 +15,29 @@
     
     <section class="nav-bar" >
         <div class="web-title-name">Fingerprint <span>Attendance</span> </div>
-        <div class="options">
-            <a id="userlink" class="nav-link" aria-current="page" href="#"  style=" font-size:25px">Username</a>
-            <a id="signoutlink" class="nav-link" aria-current="page" href="#" style="margin: 15px; font-size:25px">Sign out</a>
-            <i class="fa-solid fa-house-user" id="honmebtn" ></i>
+        <div class="options" style="" >
+            <a id="userlink" class="nav-link" aria-current="page" href="#"  style=" font-size:25px;display:none ;">Username</a>
+            <a id="signoutlink" class="nav-link" aria-current="page" href="#" style="margin: 15px; font-size:25px; display:none ;">Sign out</a>
+            <i class="fa-solid fa-house-user" id="honmebtn"  style="display:none ;"></i>
 
             
         </div>
         
     </section>
 
-    <section class="RegLogInSec"  id="RegLogInSec">
-            <div id="userlinkDiv">
+    <section class="ChooseAdminUser"  id="ChooseAdminUser">
+        <div id="AdminDiv">
+            Admin
+        </div>
+
+        <div id="UserDiv">
+            User
+        </div>
+
+    </section>
+
+    <section class="RegLogInSec"  id="RegLogInSec" style="display: none;" >
+            <div id="userlinkDiv" style="display:none ;">
                 <a id="" class="nav-link" aria-current="page" href="register.html" style="color: black;">Creat New Account</a>
             </div>
 
@@ -36,7 +47,7 @@
 
     </section>
 
-    <section class="beginSection "  id="beginSection">
+    <section class="beginSection "  id="beginSection" style="display: none;" >
             <div id="EnrlDiv">
                 Enroll
             </div>

@@ -51,24 +51,38 @@ function OnldFunction(){
 
       userlink.style.display = 'none';
 
+      homeBtn.style.display = 'none';
+
+
+
     }
     else{
-
+    userlink.style.display ="";
       userlink.innerHTML= currentUser.username;
     //   header.innerHTML = "welcome " + currentUser.fullname;
     //   userlink.classList.replace( "btn","nav-link");
     //   userlink.classList.remove("btn-primary");
       userlink.href = "#";
 
+      signoutlink.style.display = "";
       signoutlink.innerHTML = "SignOut";
     //   signoutlink.classList.replace("btn","nav-link");
     //   signoutlink.classList.add("btn-success");
       signoutlink.href="index.html";
 
-      beginSection.style.display = 'flex';
+      beginSection.style.display = '';
 
       RegLogInSec.style.display = 'none';
 
+      homeBtn.style.display = '';
+
+      ChooseAdminUser.style.display = 'none';
+
+      if(window.localStorage.getItem("InAdminView") === "true"){
+        enrollBtn.style.display = ''; 
+      }else if(window.localStorage.getItem("InAdminView") === "false"){
+        enrollBtn.style.display = 'none'; 
+      }
 
     }
   }
@@ -158,12 +172,22 @@ var mrkAttnBtn = document.getElementById("MrkAttnDiv");
 var FiltrDtBtn = document.getElementById("FiltrDtDiv");
 let srchBtn = document.getElementById("serchbtn");
 let selctDate = document.getElementById("SearchDate");
+
+let AdminDiv = document.getElementById('AdminDiv');
+let UserDiv = document.getElementById('UserDiv');
+let ChooseAdminUser = document.getElementById('ChooseAdminUser');
+let userlinkDiv = document.getElementById('userlinkDiv');
+
 let countVrble = 0;
+
 
 homeBtn.addEventListener('click', home);
 enrollBtn.addEventListener('click', enrollPage);
 mrkAttnBtn.addEventListener('click', attenPage);
 FiltrDtBtn.addEventListener('click', FiltrtDtPage);
+
+AdminDiv.addEventListener('click', AdminView);
+UserDiv.addEventListener('click', UserView);
 
     
 function home(){
@@ -198,8 +222,17 @@ function FiltrtDtPage(){
     FilterSec.style.display =  'block';  
 
 }
-    
-    
+function AdminView(){
+    window.localStorage.setItem("InAdminView", "true");
+    ChooseAdminUser.style.display = 'none'; 
+    RegLogInSec.style.display = '';
+}
+function UserView(){
+    window.localStorage.setItem("InAdminView", "false");
+    ChooseAdminUser.style.display = 'none'; 
+    RegLogInSec.style.display = '';
+    userlinkDiv.style.display = '';
+}
     
     
     
