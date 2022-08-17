@@ -250,7 +250,7 @@ var tbody1 = document.getElementById('tbody1');
 var tbody2 = document.getElementById('tbody2');
 var tbody3 = document.getElementById('tbody3');
 
-function AddItemToTable(fngrId, name, gen, sNum, email){
+function AddItemToTable(fngrId, name, gen, sNum, email, regdate){
     let trow = document.createElement("tr");
     let td1 = document.createElement('td');
     let td2 = document.createElement('td');
@@ -259,14 +259,12 @@ function AddItemToTable(fngrId, name, gen, sNum, email){
     let td5 = document.createElement('td');
     let td6 = document.createElement('td');
 
-    const d = new Date();
-    let text = d.toLocaleDateString();
 
     td1.innerHTML = fngrId;
     td2.innerHTML = name;
     td3.innerHTML = gen;
     td4.innerHTML = sNum;
-    td5.innerHTML = text;
+    td5.innerHTML = regdate;
     td6.innerHTML = email;
 
     trow.appendChild(td1);
@@ -314,7 +312,7 @@ const db = getDatabase();
 function AddAllItemToTable(Students){
         tbody1.innerHTML="";
         Students.forEach(element => {
-            AddItemToTable(element.FingerId, element.NameOfStd, element.Gender, element.SrlNum,element.EmlAddrs)
+            AddItemToTable(element.FingerId, element.NameOfStd, element.Gender, element.SrlNum,element.EmlAddrs, element.RegDate)
         });
     }
 
@@ -561,6 +559,9 @@ window.onload = GetAllDataRealtime;
 
        // insert data function
        function InsertUserInfo(){
+        const d = new Date();
+        let text = d.toLocaleDateString();
+
         set(ref(db, "Finger Print Is/"),{
             Stored: 0,
 
@@ -584,7 +585,8 @@ window.onload = GetAllDataRealtime;
                    SrlNum: SrlNum.value,
                    EmlAddrs: EmlAddrs.value,
                    Gender: selectedGender,
-                   DaleyAttemptNo: 1
+                   DaleyAttemptNo: 1,
+                   RegDate: text
                })
                .then(()=>{
                 Swal.fire({
