@@ -52,6 +52,7 @@ function OnldFunction(){
       userlink.style.display = 'none';
 
       homeBtn.style.display = 'none';
+      attendnceSec.style.display =  'none';  
 
 
 
@@ -76,7 +77,8 @@ function OnldFunction(){
 
       homeBtn.style.display = '';
 
-      ChooseAdminUser.style.display = 'none';
+    attendnceSec.style.display =  'none';  
+    ChooseAdminUser.style.display = 'none';
 
       if(window.localStorage.getItem("InAdminView") === "true"){
         enrollBtn.style.display = ''; 
@@ -224,12 +226,18 @@ function FiltrtDtPage(){
 }
 function AdminView(){
     window.localStorage.setItem("InAdminView", "true");
+    window.localStorage.setItem("areYouAdmin", "true");
+    console.log(window.localStorage.getItem("areYouAdmin"))
     ChooseAdminUser.style.display = 'none'; 
     RegLogInSec.style.display = '';
+    attendnceSec.style.display =  'none';  
+
 }
 function UserView(){
+    window.localStorage.setItem("areYouAdmin", "false");
     window.localStorage.setItem("InAdminView", "false");
     ChooseAdminUser.style.display = 'none'; 
+    attendnceSec.style.display =  'none';  
     RegLogInSec.style.display = '';
     userlinkDiv.style.display = '';
 }
