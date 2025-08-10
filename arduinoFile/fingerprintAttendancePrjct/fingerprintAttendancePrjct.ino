@@ -6,9 +6,9 @@ using namespace std;
 
 // Set these to run example.
 #define FIREBASE_HOST "nodemcuprjct-default-rtdb.firebaseio.com"
-#define FIREBASE_AUTH "SyyzOf4O2Yx3KBzuiqb9eafwbSCDRCJx9FdmTNKw"
+#define FIREBASE_AUTH ""
 #define WIFI_SSID "Baby_Dialog"
-#define WIFI_PASSWORD "21506310P"
+#define WIFI_PASSWORD ""
 
 //----------------------------------------------------------------------------------------------
 #include <Adafruit_Fingerprint.h>
